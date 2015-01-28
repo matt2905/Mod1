@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 17:18:18 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/28 17:37:07 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void Map::HeightHill( void ) {
 	float dist;
 
 	//	Position of the comparate Hill
-//	unsigned int zCmp;
+	float zCmp;
 
 	while ( i != ite ) {
 		std::cout << "test" << std::endl;
@@ -160,23 +160,23 @@ void Map::HeightHill( void ) {
 
 				//	Check correct value of Hill
 				if ( z > this->_map[x][y] )
-				{/*
+				{
 					//	Seek conflict with other Hill
 					j = this->_mapHill.begin();
-					while ( j != this->_mapHill.end() ) {
+					while ( j != ite ) {
 						//	Don't compare for himself
 						if ( j == i )
 							j++;
-						if ( j == this->_mapHill.end() )
+						if ( j == ite )
 							break ;
+						zCmp = sqrt((*j).z);
 						//	If our point is outside the radius of compared Hill
-						if ( x <= ((*j).x - (*j).z) && ((*j).x ) )
-						zCmp = (*j).z * (*j).z;
+						if ( x <= ((*j).x - zCmp) && ((*j).x ) )
 						dist = ( (*j).x - x ) * ( (*j).x - x ) + ( (*j).y - y ) * ( (*j).y - y );
-						if (dist  zCmp)
+						if ( (dist + zCmp) < z )
+							z = dist + zCmp;
 						j++;
-						//	To finish
-					}*/
+					}
 					this->_map[x][y] = z;
 				}
 			}
