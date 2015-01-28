@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 16:11:05 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/28 16:19:43 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,22 +51,22 @@ Map & Map::operator=( const Map & map ) {
 //	Destructor
 Map::~Map( void ) {
 	this->ClearMapHill();
-	this->ClearMapHeight();
 	this->ClearMap();
 }
 
 
 //	Setter
 void Map::setMapHill( std::list<t_map> mapHill ) {
-	std::list<t_map>::iterator i;
-
 	this->_mapHill = mapHill;
+
+	std::list<t_map>::iterator i;
+	std::list<t_map>::iterator ite = this->_mapHill.end();
+
 	i = this->_mapHill.begin();
-	while ( i != this->_mapHill.end() ) {
+	for (i = this->_mapHill.begin(); i != ite; i++)
+	{
 		if ( (*i).x > this->_sizeX || (*i).y > this->_sizeY )
 			this->_mapHill.erase(i);
-		else
-			i++;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/28 14:33:23 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/28 16:23:45 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include "map.h"
+#include "Map.hpp"
 
 void	ft_get_coord(char *str, std::list<t_map> *map)
 {
@@ -61,16 +62,26 @@ void	ft_parse(char *argv, std::list<t_map> *map)
 
 int		main(int argc, char **argv)
 {
-	std::list<t_map>		map;
+	std::list<t_map>	mapHill;
+	Map					map;
+	unsigned int		**osef;
 
 	if (argc != 2)
 	{
 		std::cout << "Usage: " << argv[0] << " file" << std::endl;
 		return (1);
 	}
-	ft_parse(argv[1], &map);
-	std::list<t_map>::iterator	it;
-	for (it = map.begin(); it != map.end(); it++)
-		std::cout << "x: "<< (*it).x << ", y: " << (*it).y << ", z: " << (*it).z << std::endl;
+	ft_parse(argv[1], &mapHill);
+	map.setMapHill(mapHill);
+
+	osef = map.getMap();
+	for (int y = 0; y < 1000; y++)
+	{
+		for (int x = 0; x < 1000; x++)
+		{
+			if (osef[y][x])
+				std::cout << "y: " << y << ", x: " << x << ", z: " << osef[y][x] << std::endl;
+		}
+	}
 	return (0);
 }
