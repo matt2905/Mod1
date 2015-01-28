@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 17:37:07 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/28 17:48:32 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,7 @@ void Map::setMapHill( std::list<t_map> mapHill ) {
 	i = this->_mapHill.begin();
 	for (i = this->_mapHill.begin(); i != ite; i++)
 	{
-		std::cout << "list" << std::endl;
 		if ( (*i).x > this->_sizeX || (*i).y > this->_sizeY ) {
-		std::cout << "erase" << std::endl;
 			this->_mapHill.erase(i);
 		}
 	}
@@ -129,7 +127,6 @@ void Map::HeightHill( void ) {
 	float zCmp;
 
 	while ( i != ite ) {
-		std::cout << "test" << std::endl;
 		zHill = sqrt((*i).z);
 
 		//	Init X radius
