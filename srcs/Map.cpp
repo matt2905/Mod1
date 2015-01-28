@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 16:03:20 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/28 16:11:05 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void Map::HeightHill( void ) {
 
 	while ( i != this->_mapHill.end() ) {
 		zHill = (*i).z * (*i).z;
-		
+
 		//	Init X radius
 		if ( (*i).x < (*i).z + 1 )
 			xMin = 0;
