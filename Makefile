@@ -6,7 +6,7 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/01/28 14:33:56 by mmartin          ###   ########.fr        #
+#    Updated: 2015/01/28 16:04:55 by tbalea           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ DOBJ		=	obj/
 
 NAME		=	mod1
 
-SRC			=	srcs/main.cpp
+SRC			=	srcs/main.cpp	\
+				srcs/Map.cpp
 
 OBJ			=	$(patsubst %.cpp, $(DOBJ)%.o, $(SRC))
 
