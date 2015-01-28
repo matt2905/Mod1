@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 16:19:43 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/28 16:25:20 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void Map::setMap( void ) {
 void Map::setMapHeight( void ) {
 	this->HeightHill();
 //	this->HeightLink();
-	this->HeightNorm();
+//	this->HeightNorm();
 }
 
 
@@ -198,7 +198,7 @@ void Map::HeightLink( void ) {
 }
 */
 //		Normalize
-void Map::HeightNorm( void ) {
+/*void Map::HeightNorm( void ) {
 	unsigned int minZ = this->_map[0][0];
 	unsigned int maxZ = this->_map[0][0];
 
@@ -220,7 +220,7 @@ void Map::HeightNorm( void ) {
 		this->ClearMapHill();
 	//	Flattern
 }
-
+*/
 //	Clear list of Hills
 void Map::ClearMapHill( void ) {
 	this->_mapHill.clear();

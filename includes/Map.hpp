@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/27 17:44:25 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 15:55:50 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/28 16:25:54 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Map {
 		//	Calcul Map
 		void HeightHill( void );
 //		void HeightLink( void );
-		void HeightNorm( void );
+//		void HeightNorm( void );
 
 		//	Clear
 		void ClearMapHill( void );
