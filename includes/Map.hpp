@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/27 17:44:25 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 16:25:54 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/28 17:16:00 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <list>
 # include <string>
 # include <iostream>
+# include <cmath>
 
 class Map {
 	public:
@@ -39,7 +40,7 @@ class Map {
 
 		//	Getter
 		std::list<t_map> getMapHill( void ) const;
-		unsigned int** getMap( void ) const;
+		float** getMap( void ) const;
 
 		//	Function
 		//void RandomMap( void );
@@ -48,7 +49,7 @@ class Map {
 		//	Calcul Map
 		void HeightHill( void );
 //		void HeightLink( void );
-//		void HeightNorm( void );
+		void HeightNorm( void );
 
 		//	Clear
 		void ClearMapHill( void );
@@ -61,7 +62,7 @@ class Map {
 		unsigned int _sizeY;
 
 		//	Map
-		unsigned int ** _map;
+		float ** _map;
 
 		//	List of hills;
 		std::list<t_map> _mapHill;

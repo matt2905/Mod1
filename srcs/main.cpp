@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/28 16:34:19 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/28 17:10:46 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int		main(int argc, char **argv)
 {
 	std::list<t_map>	mapHill;
 	Map					map;
-	unsigned int		**osef;
+	float				**osef;
 
 	if (argc != 2)
 	{

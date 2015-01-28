@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 16:35:10 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/28 17:18:18 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,16 +75,16 @@ void Map::setMapHill( std::list<t_map> mapHill ) {
 }
 
 void Map::setMap( void ) {
-	_map = new unsigned int*[this->_sizeX];
+	_map = new float*[this->_sizeX];
 	for ( unsigned int i = 0; i < this->_sizeX; i++ ) {
-		_map[i] = new unsigned int [this->_sizeY];
+		_map[i] = new float [this->_sizeY];
 	}
 }
 
 void Map::setMapHeight( void ) {
 	this->HeightHill();
 //	this->HeightLink();
-//	this->HeightNorm();
+	this->HeightNorm();
 }
 
 
@@ -93,7 +93,7 @@ std::list<t_map> Map::getMapHill( void ) const {
 	return this->_mapHill;
 }
 
-unsigned int** Map::getMap( void ) const {
+float** Map::getMap( void ) const {
 	return this->_map;
 }
 
@@ -121,31 +121,31 @@ void Map::HeightHill( void ) {
 	unsigned int yMax;
 
 	//	Height data;
-	unsigned int zHill;
-	unsigned int z;
-	unsigned int dist;
+	float zHill;
+	float z;
+	float dist;
 
 	//	Position of the comparate Hill
 //	unsigned int zCmp;
 
 	while ( i != ite ) {
 		std::cout << "test" << std::endl;
-		zHill = (*i).z * (*i).z;
+		zHill = sqrt((*i).z);
 
 		//	Init X radius
-		if ( (*i).x < (*i).z + 1 )
+		if ( (*i).x < zHill + 1 )
 			xMin = 0;
 		else
-			xMin = (*i).x - (*i).z - 1;
-		if ( (xMax = (*i).x + (*i).z + 1) > this->_sizeX )
+			xMin = (*i).x - zHill - 1;
+		if ( (xMax = (*i).x + zHill + 1) > this->_sizeX )
 			xMax = this->_sizeX;
 
 		//	Init Y radius
-		if ( (*i).y < (*i).z + 1 )
+		if ( (*i).y < zHill + 1 )
 			yMin = 0;
 		else
-			yMin = (*i).y - (*i).z - 1;
-		if ( (yMax = (*i).y + (*i).z + 1) > this->_sizeY )
+			yMin = (*i).y - zHill  - 1;
+		if ( (yMax = (*i).y + zHill  + 1) > this->_sizeY )
 			yMax = this->_sizeY;
 
 		//	Seek all affected point
@@ -155,10 +155,8 @@ void Map::HeightHill( void ) {
 				//	Seek distance from center of hill
 				dist = ( (*i).x - x ) * ( (*i).x - x ) + ( (*i).y - y ) * ( (*i).y - y );
 				//	Determine height for this point for THIS Hill
-				if (zHill < dist)
+				if ( (z = (*i).z - dist) < 0 )
 					z = 0;
-				else
-					z = zHill - dist;
 
 				//	Check correct value of Hill
 				if ( z > this->_map[x][y] )
@@ -204,15 +202,15 @@ void Map::HeightLink( void ) {
 }
 */
 //		Normalize
-/*void Map::HeightNorm( void ) {
+void Map::HeightNorm( void ) {
 	unsigned int minZ = this->_map[0][0];
 	unsigned int maxZ = this->_map[0][0];
 
 	for ( unsigned int x = 0; x < this->_sizeX; ++x) {
 		for ( unsigned int y = 0; y < this->_sizeY; ++y) {
-			if ( minZ < this->_map[x][y])
+			if ( minZ > this->_map[x][y])
 				minZ = this->_map[x][y];
-			if ( maxZ > this->_map[x][y])
+			if ( maxZ < this->_map[x][y])
 				maxZ = this->_map[x][y];
 		}
 	}
@@ -226,7 +224,7 @@ void Map::HeightLink( void ) {
 		this->ClearMapHill();
 	//	Flattern
 }
-*/
+
 //	Clear list of Hills
 void Map::ClearMapHill( void ) {
 	this->_mapHill.clear();
