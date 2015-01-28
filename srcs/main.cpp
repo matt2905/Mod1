@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/28 14:13:34 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/28 14:33:23 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_get_coord(char *str, std::list<t_map> *map)
 	t_map	coord;
 
 	i = 0;
-	tmp = strtok(str, " ,");
+	tmp = strtok(str, ",");
 	while (tmp)
 	{
 		if (i == 0)
@@ -44,16 +44,17 @@ void	ft_parse(char *argv, std::list<t_map> *map)
 	std::ifstream	ifs(argv);
 	std::string		line;
 	char			*str;
+	char			*ptr;
 
 	while (getline(ifs, line))
 	{
 		if (!line.length())
 			continue ;
-		str = strtok(const_cast<char *>(line.c_str()), " ()");
+		str = strtok_r(const_cast<char *>(line.c_str()), " ()", &ptr);
 		while (str)
 		{
-			ft_get_coord(strdup(str), map);
-			str = strtok(NULL, " ()");
+			ft_get_coord(str, map);
+			str = strtok_r(NULL, " ()", &ptr);
 		}
 	}
 }
@@ -68,5 +69,8 @@ int		main(int argc, char **argv)
 		return (1);
 	}
 	ft_parse(argv[1], &map);
+	std::list<t_map>::iterator	it;
+	for (it = map.begin(); it != map.end(); it++)
+		std::cout << "x: "<< (*it).x << ", y: " << (*it).y << ", z: " << (*it).z << std::endl;
 	return (0);
 }
