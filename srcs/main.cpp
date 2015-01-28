@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/28 16:23:45 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/28 16:34:19 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ int		main(int argc, char **argv)
 		return (1);
 	}
 	ft_parse(argv[1], &mapHill);
-	map.setMapHill(mapHill);
 
+	map.setMapHill(mapHill);
 	osef = map.getMap();
 	for (int y = 0; y < 1000; y++)
 	{

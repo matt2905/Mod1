@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 16:25:20 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/28 16:35:10 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,13 @@ void Map::setMapHill( std::list<t_map> mapHill ) {
 	i = this->_mapHill.begin();
 	for (i = this->_mapHill.begin(); i != ite; i++)
 	{
-		if ( (*i).x > this->_sizeX || (*i).y > this->_sizeY )
+		std::cout << "list" << std::endl;
+		if ( (*i).x > this->_sizeX || (*i).y > this->_sizeY ) {
+		std::cout << "erase" << std::endl;
 			this->_mapHill.erase(i);
+		}
 	}
+	this->setMapHeight();
 }
 
 void Map::setMap( void ) {
@@ -105,6 +109,7 @@ unsigned int** Map::getMap( void ) const {
 void Map::HeightHill( void ) {
 	//	Iterator to check all Hills
 	std::list<t_map>::iterator i = this->_mapHill.begin();
+	std::list<t_map>::iterator ite = this->_mapHill.end();
 	std::list<t_map>::iterator j;
 
 	//	X radius attribute
@@ -123,7 +128,8 @@ void Map::HeightHill( void ) {
 	//	Position of the comparate Hill
 //	unsigned int zCmp;
 
-	while ( i != this->_mapHill.end() ) {
+	while ( i != ite ) {
+		std::cout << "test" << std::endl;
 		zHill = (*i).z * (*i).z;
 
 		//	Init X radius
