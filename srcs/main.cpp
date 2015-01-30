@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/28 17:10:46 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/30 18:57:36 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include "map.h"
-#include "Map.hpp"
+#include "Map.class.hpp"
 
 void	ft_get_coord(char *str, std::list<t_map> *map)
 {
@@ -37,7 +37,8 @@ void	ft_get_coord(char *str, std::list<t_map> *map)
 		i++;
 		tmp = strtok(NULL, ",");
 	}
-	map->push_back(coord);
+	if (i == 2)
+		map->push_back(coord);
 }
 
 void	ft_parse(char *argv, std::list<t_map> *map)
@@ -64,7 +65,6 @@ int		main(int argc, char **argv)
 {
 	std::list<t_map>	mapHill;
 	Map					map;
-	float				**osef;
 
 	if (argc != 2)
 	{
@@ -74,14 +74,5 @@ int		main(int argc, char **argv)
 	ft_parse(argv[1], &mapHill);
 
 	map.setMapHill(mapHill);
-	osef = map.getMap();
-	for (int y = 0; y < 1000; y++)
-	{
-		for (int x = 0; x < 1000; x++)
-		{
-			if (osef[y][x])
-				std::cout << "y: " << y << ", x: " << x << ", z: " << osef[y][x] << std::endl;
-		}
-	}
 	return (0);
 }

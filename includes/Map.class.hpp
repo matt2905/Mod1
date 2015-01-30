@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Map.hpp                                            :+:      :+:    :+:   */
+/*   Map.class.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/27 17:44:25 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/28 17:16:00 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/01/30 14:56:24 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAP_HPP
-# define MAP_HPP
+#ifndef MAP_CLASS_HPP
+# define MAP_CLASS_HPP
 
-# include "Map.h"
+# include <cmath>
+# include <iostream>
 # include <list>
 # include <string>
-# include <iostream>
-# include <cmath>
+# include "Map.h"
 
 class Map {
 	public:

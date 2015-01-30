@@ -6,11 +6,13 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/01/28 16:15:24 by mmartin          ###   ########.fr        #
+#    Updated: 2015/01/30 18:57:27 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CFLAGS		=	-Wall -Wextra -Werror -g
+export PKG_CONFIG_PATH=/usr/X11/lib/pkgconfig
+
+CFLAGS		=	-Wall -Wextra -Werror `pkg-config --cflags gtkmm-3.0`
 
 CC			=	g++
 
@@ -18,10 +20,13 @@ INC			=	-I includes
 
 DOBJ		=	obj/
 
+LIB			=	`pkg-config --libs gtkmm-3.0`
+
 NAME		=	mod1
 
-SRC			=	srcs/main.cpp	\
-				srcs/Map.cpp
+SRC			=	srcs/main.cpp			\
+				srcs/Map.class.cpp		\
+				srcs/Display.class.cpp
 
 OBJ			=	$(patsubst %.cpp, $(DOBJ)%.o, $(SRC))
 
@@ -31,10 +36,9 @@ DEPENDS		=	-MT $@ -MD -MP -MF $(subst .o,.d,$@)
 
 all:		$(NAME)
 
-
 $(NAME):	$(OBJ)
-	@echo "\033[32m$(CC) \033[33m$(CFLAGS) \033[36m-c $< -o $@\033[0m"
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+	@echo "\033[32m$(CC) \033[33m$(CFLAGS) \033[36m-c $< -o $@ $(LIB)\033[0m"
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB)
 	@echo "\033[33m"Compilation of $(NAME) : "\033[32m"Success"\033[0m"
 
 -include		$(OBJ:.o=.d)
