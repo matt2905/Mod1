@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/31 11:59:15 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/31 12:09:42 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <fstream>
 #include "map.h"
 #include "Map.class.hpp"
-#include "myarea.h"
 
 void	ft_get_coord(char *str, std::list<t_map> *map)
 {
@@ -62,7 +61,6 @@ void	ft_parse(char *argv, std::list<t_map> *map)
 int		main(int argc, char **argv)
 {
 	std::list<t_map>	mapHill;
-	Map					map;
 
 	if (argc != 2)
 	{
@@ -71,7 +69,5 @@ int		main(int argc, char **argv)
 	}
 	ft_parse(argv[1], &mapHill);
 
-	map.setMapHill(mapHill);
-
-	return (display(argc, argv));
+	return (display(argc, argv, mapHill));
 }
