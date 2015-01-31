@@ -6,17 +6,15 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/31 10:58:07 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/31 11:59:15 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
-#include <stdlib.h>
-#include <list>
-#include <iostream>
+#include <gtkmm/window.h>
 #include <fstream>
 #include "map.h"
 #include "Map.class.hpp"
+#include "myarea.h"
 
 void	ft_get_coord(char *str, std::list<t_map> *map)
 {
@@ -75,5 +73,5 @@ int		main(int argc, char **argv)
 
 	map.setMapHill(mapHill);
 
-	return (0);
+	return (display(argc, argv));
 }

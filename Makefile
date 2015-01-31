@@ -6,7 +6,7 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/01/31 11:00:35 by mmartin          ###   ########.fr        #
+#    Updated: 2015/01/31 11:59:21 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CFLAGS		=	-Wall -Wextra -Werror -g `pkg-config --cflags gtkmm-3.0`
 
 CC			=	g++
 
-INC			=	-I includes
+INC			=	-I includes -I.
 
 DOBJ		=	obj/
 
@@ -25,6 +25,7 @@ LIB			=	`pkg-config --libs gtkmm-3.0`
 NAME		=	mod1
 
 SRC			=	srcs/main.cpp			\
+				srcs/display.cpp		\
 				srcs/Map.class.cpp		\
 
 OBJ			=	$(patsubst %.cpp, $(DOBJ)%.o, $(SRC))

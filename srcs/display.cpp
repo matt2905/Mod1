@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map.h                                              :+:      :+:    :+:   */
+/*   Display.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/01/28 13:58:17 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/31 11:57:24 by mmartin          ###   ########.fr       */
+/*   Created: 2015/01/31 11:56:04 by mmartin           #+#    #+#             */
+/*   Updated: 2015/01/31 11:59:07 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAP_H
-# define MAP_H
+#include <gtkmm/window.h>
 
-typedef struct		s_map
+int		display(int &argc, char **&argv)
 {
-	unsigned int	x;
-	unsigned int	y;
-	unsigned int	z;
-}					t_map;
+	argc = 1;
+	Glib::RefPtr<Gtk::Application>	app = Gtk::Application::create(argc, argv, "Mod 1");
+	Gtk::Window						win;
 
-int					display(int &argc, char **&argv);
-
-#endif
+/*	MyArea		area;
+	win.add(area);
+	area.show();
+*/
+	return (app->run(win));
+}
