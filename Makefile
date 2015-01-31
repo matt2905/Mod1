@@ -6,27 +6,25 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/01/31 12:22:54 by mmartin          ###   ########.fr        #
+#    Updated: 2015/01/31 19:56:16 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-export PKG_CONFIG_PATH=/usr/X11/lib/pkgconfig
-
-CFLAGS		=	-Wall -Wextra -Werror -g `pkg-config --cflags gtkmm-3.0`
+CFLAGS		=	-Wall -Wextra -Werror -g
 
 CC			=	g++
 
-INC			=	-I includes -I.
+INC			=	-I includes -I /usr/X11R6/include
 
 DOBJ		=	obj/
 
-LIB			=	`pkg-config --libs gtkmm-3.0`
-
 NAME		=	mod1
 
-SRC			=	srcs/main.cpp			\
-				srcs/display.cpp		\
-				srcs/Map.class.cpp		\
+LIB			=	-L /usr/X11R6/lib -lX11
+
+SRC			=	srcs/main.cpp					\
+				srcs/GraphicalDisplay.class.cpp	\
+				srcs/Map.class.cpp				\
 
 OBJ			=	$(patsubst %.cpp, $(DOBJ)%.o, $(SRC))
 

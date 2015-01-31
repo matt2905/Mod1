@@ -6,14 +6,17 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/31 12:09:42 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/31 19:55:50 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <gtkmm/window.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <fstream>
 #include "map.h"
 #include "Map.class.hpp"
+#include "GraphicalDisplay.class.hpp"
 
 void	ft_get_coord(char *str, std::list<t_map> *map)
 {
@@ -69,5 +72,9 @@ int		main(int argc, char **argv)
 	}
 	ft_parse(argv[1], &mapHill);
 
-	return (display(argc, argv, mapHill));
+	GraphicalDisplay		gd(500, 500);
+
+	gd.run();
+
+	return (0);
 }

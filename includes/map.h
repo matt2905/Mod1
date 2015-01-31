@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:58:17 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/31 12:10:15 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/31 18:42:44 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,5 @@ typedef struct		s_map
 	unsigned int	y;
 	unsigned int	z;
 }					t_map;
-
-int					display(int &, char **&, std::list<t_map>);
 
 #endif
