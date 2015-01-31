@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/30 18:57:36 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/01/31 10:58:07 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,6 @@ int		main(int argc, char **argv)
 	ft_parse(argv[1], &mapHill);
 
 	map.setMapHill(mapHill);
+
 	return (0);
 }
