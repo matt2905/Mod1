@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/01/31 19:55:50 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/01 11:11:30 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	ft_get_coord(char *str, std::list<t_map> *map)
 		i++;
 		tmp = strtok(NULL, ",");
 	}
-	if (i == 2)
+	if (i == 3)
 		map->push_back(coord);
 }
 
@@ -72,7 +72,12 @@ int		main(int argc, char **argv)
 	}
 	ft_parse(argv[1], &mapHill);
 
-	GraphicalDisplay		gd(500, 500);
+	std::list<t_map>::iterator			it;
+	std::list<t_map>::const_iterator	ite = mapHill.end();
+
+	GraphicalDisplay		gd(1000, 1000);
+
+	gd.setMap(mapHill);
 
 	gd.run();
 
