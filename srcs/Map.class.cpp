@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/12 13:04:30 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/12 13:53:20 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,9 +123,6 @@ void Map::HeightHill( void ) {
 	float z;
 	float dist;
 
-	//	Position of the comparate Hill
-	float zCmp;
-
 	while ( i != ite ) {
 		zHill = sqrt((*i).z);
 
@@ -162,16 +159,11 @@ void Map::HeightHill( void ) {
 					j = this->_mapHill.begin();
 					while ( j != ite ) {
 						//	Don't compare for himself
-						if ( j == i )
-							j++;
-						if ( j == ite )
+						if ( j == i && ++j == ite)
 							break ;
-						zCmp = sqrt((*j).z);
-						//	If our point is outside the radius of compared Hill
-						if ( x <= ((*j).x - zCmp) && ((*j).x ) )
 						dist = ( (*j).x - x ) * ( (*j).x - x ) + ( (*j).y - y ) * ( (*j).y - y );
-						if ( (dist + zCmp) < z )
-							z = dist + zCmp;
+						if ( (dist + (*j).z) < z )
+							z = dist + (*j).z;
 						j++;
 					}
 					this->_map[x][y] = z;
@@ -203,6 +195,7 @@ void Map::HeightNorm( void ) {
 	unsigned int minZ = this->_map[0][0];
 	unsigned int maxZ = this->_map[0][0];
 
+	//	Serach min and max z
 	for ( unsigned int x = 0; x < this->_sizeX; ++x) {
 		for ( unsigned int y = 0; y < this->_sizeY; ++y) {
 			if ( minZ > this->_map[x][y])
@@ -211,6 +204,10 @@ void Map::HeightNorm( void ) {
 				maxZ = this->_map[x][y];
 		}
 	}
+	//	Force normalize if z value to low
+	if ( maxZ < 15000 )
+		maxZ = 15000;
+	//	Normalize if it's not flat
 	if ( maxZ != minZ ) {
 		for ( unsigned int x = 0; x < this->_sizeX; ++x) {
 			for ( unsigned int y = 0; y < this->_sizeY; ++y) {
