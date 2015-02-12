@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/30 14:59:27 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/12 13:04:30 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,16 +134,16 @@ void Map::HeightHill( void ) {
 			xMin = 0;
 		else
 			xMin = (*i).x - zHill - 1;
-		if ( (xMax = (*i).x + zHill + 1) > this->_sizeX )
-			xMax = this->_sizeX;
+		if ( (xMax = (*i).x + zHill + 1) >= this->_sizeX )
+			xMax = this->_sizeX - 1;
 
 		//	Init Y radius
 		if ( (*i).y < zHill + 1 )
 			yMin = 0;
 		else
 			yMin = (*i).y - zHill  - 1;
-		if ( (yMax = (*i).y + zHill  + 1) > this->_sizeY )
-			yMax = this->_sizeY;
+		if ( (yMax = (*i).y + zHill  + 1) >= this->_sizeY )
+			yMax = this->_sizeY - 1;
 
 		//	Seek all affected point
 		for ( unsigned int x = xMin; x <= xMax; ++x) {

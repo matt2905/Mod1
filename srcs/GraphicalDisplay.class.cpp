@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/12 12:39:46 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/12 12:50:38 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ void		GraphicalDisplay::draw(float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = tab[y][x] * -100 + 0.25f * x + 0.25f * y;
-			if (tab[y][x] < 0.1f)
+			proj_y = tab[y][x] * -100 + 0.25f * x + 0.25f * y + 500;
+			if (tab[y][x] < 0.01f)
 				XDrawPoint(_dis, _win, _green, proj_x, proj_y);
 			else if (tab[y][x] < 0.4f)
 				XDrawPoint(_dis, _win, _brown, proj_x, proj_y);
