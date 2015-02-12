@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/01 11:02:22 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/12 11:07:08 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class	GraphicalDisplay
 		bool				setMap(std::list<t_map> &);
 
 		void				run(void);
+		void				draw(float **);
 
 	private:
 		Display			*_dis;
@@ -35,6 +36,9 @@ class	GraphicalDisplay
 		Map				*_map;
 		unsigned int	_width;
 		unsigned int	_height;
+		GC				_green;
+		GC				_brown;
+		GC				_white;
 
 		GraphicalDisplay(void);
 		GraphicalDisplay(const GraphicalDisplay &);

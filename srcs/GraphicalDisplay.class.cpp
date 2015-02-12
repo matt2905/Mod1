@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/01 12:03:31 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/12 11:10:40 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	XMapWindow(_dis, _win);
 
 	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
+
+	_green = XCreateGC(_dis, _win, 0, 0);
+	_brown = XCreateGC(_dis, _win, 0, 0);
+	_white = XCreateGC(_dis, _win, 0, 0);
 }
 
 GraphicalDisplay::~GraphicalDisplay(void)
@@ -47,52 +51,55 @@ bool		GraphicalDisplay::setMap(std::list<t_map> &mapHill)
 
 
 
+void		GraphicalDisplay::draw(float **tab)
+{
+	int		proj_x;
+	int		proj_y;
+
+	for (size_t x = 0; x < _width; x++)
+	{
+		for (size_t y = 0; y < _height; y++)
+		{
+			proj_x = 0.5 * x - 0.5 * y + 500;
+			proj_y = tab[y][x] + 0.25 * x + 0.25 * y + 500;
+			if (tab[y][x] < 0.01)
+				XDrawPoint(_dis, _win, _green, proj_x, proj_y);
+			else if (tab[y][x] < 0.6)
+				XDrawPoint(_dis, _win, _brown, proj_x, proj_y);
+			else
+				XDrawPoint(_dis, _win, _white, proj_x, proj_y);
+		}
+	}
+}
+
 void		GraphicalDisplay::run(void)
 {
-	GC			green_gc;
-	GC			brown_gc;
-	GC			white_gc;
 	XColor		color;
 	Colormap	colormap;
-	char		green[] = "#00FF00";
+	char		green[] = "#096A09";
 	char		brown[] = "#8B4513";
 	char		white[] = "#FFFFFF";
 	float		**tab = _map->getMap();
 
-
 	colormap = DefaultColormap(_dis, 0);
-	green_gc = XCreateGC(_dis, _win, 0, 0);
-	brown_gc = XCreateGC(_dis, _win, 0, 0);
-	white_gc = XCreateGC(_dis, _win, 0, 0);
 	XParseColor(_dis, colormap, green, &color);
 	XAllocColor(_dis, colormap, &color);
-	XSetForeground(_dis, green_gc, color.pixel);
+	XSetForeground(_dis, _green, color.pixel);
 
 	XParseColor(_dis, colormap, brown, &color);
 	XAllocColor(_dis, colormap, &color);
-	XSetForeground(_dis, brown_gc, color.pixel);
+	XSetForeground(_dis, _brown, color.pixel);
 
 	XParseColor(_dis, colormap, white, &color);
 	XAllocColor(_dis, colormap, &color);
-	XSetForeground(_dis, white_gc, color.pixel);
+	XSetForeground(_dis, _white, color.pixel);
 
 	while (1)
 	{
 		XNextEvent(_dis, &_report);
 		switch (_report.type) {
 			case Expose:
-				for (size_t i = 0; i < _width; i++)
-				{
-					for (size_t y = 0; y < _height; y++)
-					{
-						if (tab[i][y] < 0.2)
-							XDrawPoint(_dis, _win, green_gc, i, y);
-						else if (tab[i][y] < 0.6)
-							XDrawPoint(_dis, _win, brown_gc, i, y);
-						else
-							XDrawPoint(_dis, _win, white_gc, i, y);
-					}
-				}
+				this->draw(tab);
 				XFlush(_dis);
 			break;
 			case KeyPress:
