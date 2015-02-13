@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map.h                                              :+:      :+:    :+:   */
+/*   water.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/01/28 13:58:17 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/13 13:01:32 by tbalea           ###   ########.fr       */
+/*   Created: 2015/02/13 11:18:13 by tbalea            #+#    #+#             */
+/*   Updated: 2015/02/13 13:01:08 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAP_H
-# define MAP_H
+#ifndef WATER_H
+# define WATER_H
 
-typedef struct		s_map
-{
-	unsigned int	x;
-	unsigned int	y;
-	unsigned int	z;
-}					t_map;
+typedef struct	s_water {
+	float	height;
+	float	speed;
+	float	dir;
+}				t_water;
 
 #endif
