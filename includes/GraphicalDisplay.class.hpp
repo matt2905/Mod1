@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/12 12:38:23 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/13 13:07:32 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,14 @@ class	GraphicalDisplay
 		GC					setColor(const char *);
 
 	private:
+		unsigned int	_width;
+		unsigned int	_height;
+		Map				*_map;
 		Display			*_dis;
 		Window			_win;
 		XEvent			_report;
-		Map				*_map;
-		unsigned int	_width;
-		unsigned int	_height;
-		GC				_green;
-		GC				_brown;
-		GC				_white;
-		GC				_grey;
+		XImage			*_image;
+		char			*_data;
 
 		GraphicalDisplay(void);
 		GraphicalDisplay(const GraphicalDisplay &);

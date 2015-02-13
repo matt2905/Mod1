@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/26 18:46:28 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/12 13:53:20 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/13 14:06:09 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,9 @@ void Map::setMapHill( std::list<t_map> mapHill ) {
 void Map::setMap( void ) {
 	_map = new float*[this->_sizeX];
 	for ( unsigned int i = 0; i < this->_sizeX; i++ ) {
-		_map[i] = new float [this->_sizeY];
+		_map[i] = new float[this->_sizeY];
+		for (unsigned int j = 0; j < this->_sizeY; j++)
+			_map[i][j] = 0;
 	}
 }
 
