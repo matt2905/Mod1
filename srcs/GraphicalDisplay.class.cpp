@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/13 14:23:36 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/13 14:33:42 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	XMapWindow(_dis, _win);
 
 	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
-	_image = XCreateImage(_dis, visual, depth, XYPixmap, 0, 0, _width, _height, BitmapPad(_dis), 0);
-	_data = new char[_width * _height * _image->bits_per_pixel / 8];
-	_image->data = _data;
+	_data = new char[_width * _height * 32 / 8];
+	bzero(_data, _width * _height * 32 / 8);
+	_image = XCreateImage(_dis, visual, depth, XYPixmap, 0, _data, _width, _height, 32, 0);
 }
 
 GraphicalDisplay::~GraphicalDisplay(void)
