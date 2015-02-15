@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/13 14:33:42 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/15 13:08:55 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,22 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	visual = DefaultVisual(_dis, screen);
 	depth = DefaultDepth(_dis, screen);
 	attributes.background_pixel = XWhitePixel(_dis, screen);
+
 	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, _width, _height, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
 	XMapWindow(_dis, _win);
-
 	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
-	_data = new char[_width * _height * 32 / 8];
-	bzero(_data, _width * _height * 32 / 8);
+
+	_data = new char[_width * _height * 4];
 	_image = XCreateImage(_dis, visual, depth, XYPixmap, 0, _data, _width, _height, 32, 0);
+	_dataGrey = new char[200 * 25 * 4];
+	_greyBG = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataGrey, 200, 25, 32, 0);
+	_dataWhite = new char[200 * 25 * 4];
+	_whiteBG = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataWhite, 200, 25, 32, 0);
+
+	rise = false;
+	wave = NONE;
+	rain = false;
+	evaporate = false;
 }
 
 GraphicalDisplay::~GraphicalDisplay(void)
@@ -50,6 +59,8 @@ GraphicalDisplay::~GraphicalDisplay(void)
 	if (_map)
 		delete _map;
 	XDestroyImage(_image);
+	XDestroyImage(_greyBG);
+	XDestroyImage(_whiteBG);
 	XCloseDisplay(_dis);
 }
 
@@ -98,6 +109,80 @@ void		GraphicalDisplay::draw(float **tab)
 	}
 }
 
+void		GraphicalDisplay::setBackground(void)
+{
+	for (int x = 0; x < 200; x++)
+	{
+		for (int y = 0; y < 25; y++)
+		{
+			XPutPixel(_greyBG, x, y, (!y || !x ? 0x000000 : 0xd3d3d3));
+			XPutPixel(_whiteBG, x, y, (!y || !x ? 0x000000 : 0xFFFFFF));
+		}
+	}
+}
+
+void		GraphicalDisplay::expose(GC gc)
+{
+	XPutImage(_dis, _win, gc, _image, 0, 0, 0, 0, _width, _height);
+	XPutImage(_dis, _win, gc, (rise ? _whiteBG : _greyBG), 0, 0, 0, 0, 200, 25);
+	XDrawString(_dis, _win, gc, 50, 15, "Rise water", 10);
+	XPutImage(_dis, _win, gc, (wave == SOUTH ? _whiteBG : _greyBG), 0, 0, 200, 0, 200, 25);
+	XDrawString(_dis, _win, gc, 250, 15, "South wave", 10);
+	XPutImage(_dis, _win, gc, (wave == EAST ? _whiteBG : _greyBG), 0, 0, 200, 25, 200, 25);
+	XDrawString(_dis, _win, gc, 250, 40, "East wave", 9);
+	XPutImage(_dis, _win, gc, (wave == NORTH ? _whiteBG : _greyBG), 0, 0, 200, 50, 200, 25);
+	XDrawString(_dis, _win, gc, 250, 65, "North wave", 10);
+	XPutImage(_dis, _win, gc, (wave == WEST ? _whiteBG : _greyBG), 0, 0, 200, 75, 200, 25);
+	XDrawString(_dis, _win, gc, 250, 90, "West wave", 9);
+	XPutImage(_dis, _win, gc, (wave == ALL ? _whiteBG : _greyBG), 0, 0, 200, 100, 200, 25);
+	XDrawString(_dis, _win, gc, 250, 115, "All wave", 8);
+	XPutImage(_dis, _win, gc, (rain ? _whiteBG : _greyBG), 0, 0, 400, 0, 200, 25);
+	XDrawString(_dis, _win, gc, 450, 15, "Rain water", 10);
+	XPutImage(_dis, _win, gc, (evaporate ? _whiteBG : _greyBG), 0, 0, 600, 0, 200, 25);
+	XDrawString(_dis, _win, gc, 650, 15, "Evaporate water", 15);
+	XPutImage(_dis, _win, gc, _greyBG, 0, 0, 800, 0, 200, 25);
+	XDrawString(_dis, _win, gc, 850, 15, "Exit", 4);
+	XFlush(_dis);
+}
+
+bool		GraphicalDisplay::buttonEvent(GC gc, XEvent event)
+{
+	int		x = event.xbutton.x;
+	int		y = event.xbutton.y;
+
+	if (x < 1000 && y < 125)
+	{
+		if (y < 25 || (x > 200 && x < 400))
+		{
+			rise = false;
+			wave = NONE;
+			rain = false;
+			evaporate = false;
+		}
+		if (y < 25 && x < 200)
+			rise = (rise ? false : true);
+		else if (y < 25 && x < 400)
+			wave = (wave == SOUTH ? NONE : SOUTH);
+		else if (y < 50 && x < 400)
+			wave = (wave == EAST ? NONE : EAST);
+		else if (y < 75 && x < 400)
+			wave = (wave == NORTH ? NONE : NORTH);
+		else if (y < 100 && x < 400)
+			wave = (wave == WEST ? NONE : WEST);
+		else if (y < 125 && x < 400)
+			wave = (wave == ALL ? NONE : ALL);
+		else if (y < 25 && x < 600)
+			rain = (rain ? false : true);
+		else if (y < 25 && x < 800)
+			evaporate = (evaporate ? false : true);
+		else if (y < 25 && x < 1000)
+			return (true);
+		if (y < 25 || (x > 200 && x < 400))
+			this->expose(gc);
+	}
+	return (false);
+}
+
 /*
 **		Run XQuartz in infinity loop for catch event
 */
@@ -108,17 +193,22 @@ void		GraphicalDisplay::run(void)
 	bool		run = true;
 
 	gc = XCreateGC(_dis, _win, 0, 0);
+	this->setBackground();
 	this->draw(tab);
 	while (run)
 	{
 		XNextEvent(_dis, &_report);
 		switch (_report.type) {
 			case Expose:
-				XPutImage(_dis, _win, gc, _image, 0, 0, 0, 0, _width, _height);
-				XFlush(_dis);
+				if (_report.xexpose.count == 0)
+					this->expose(gc);
 			break;
 			case KeyPress:
 				if (XLookupKeysym(&_report.xkey, 0) == XK_q)
+					run = false;
+			break;
+			case ButtonPress:
+				if (this->buttonEvent(gc, _report))
 					run = false;
 			break;
 		}

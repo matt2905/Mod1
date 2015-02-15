@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/13 13:07:32 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/15 12:58:31 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,20 @@ class	GraphicalDisplay
 
 		void				run(void);
 		void				draw(float **);
-		GC					setColor(const char *);
+		void				setBackground(void);
+
+		void				expose(GC gc);
+		bool				buttonEvent(GC, XEvent);
+
+		enum	e_wave
+		{
+			NONE,
+			SOUTH,
+			EAST,
+			NORTH,
+			WEST,
+			ALL
+		};
 
 	private:
 		unsigned int	_width;
@@ -39,6 +52,15 @@ class	GraphicalDisplay
 		XEvent			_report;
 		XImage			*_image;
 		char			*_data;
+		XImage			*_greyBG;
+		char			*_dataGrey;
+		XImage			*_whiteBG;
+		char			*_dataWhite;
+
+		bool			rise;
+		e_wave			wave;
+		bool			rain;
+		bool			evaporate;
 
 		GraphicalDisplay(void);
 		GraphicalDisplay(const GraphicalDisplay &);
