@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/15 13:08:55 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/15 18:37:00 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,12 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	_whiteBG = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataWhite, 200, 25, 32, 0);
 
 	rise = false;
-	wave = NONE;
 	rain = false;
 	evaporate = false;
+	south = false;
+	east = false;
+	north = false;
+	west = false;
 }
 
 GraphicalDisplay::~GraphicalDisplay(void)
@@ -126,15 +129,15 @@ void		GraphicalDisplay::expose(GC gc)
 	XPutImage(_dis, _win, gc, _image, 0, 0, 0, 0, _width, _height);
 	XPutImage(_dis, _win, gc, (rise ? _whiteBG : _greyBG), 0, 0, 0, 0, 200, 25);
 	XDrawString(_dis, _win, gc, 50, 15, "Rise water", 10);
-	XPutImage(_dis, _win, gc, (wave == SOUTH ? _whiteBG : _greyBG), 0, 0, 200, 0, 200, 25);
+	XPutImage(_dis, _win, gc, (south ? _whiteBG : _greyBG), 0, 0, 200, 0, 200, 25);
 	XDrawString(_dis, _win, gc, 250, 15, "South wave", 10);
-	XPutImage(_dis, _win, gc, (wave == EAST ? _whiteBG : _greyBG), 0, 0, 200, 25, 200, 25);
+	XPutImage(_dis, _win, gc, (east ? _whiteBG : _greyBG), 0, 0, 200, 25, 200, 25);
 	XDrawString(_dis, _win, gc, 250, 40, "East wave", 9);
-	XPutImage(_dis, _win, gc, (wave == NORTH ? _whiteBG : _greyBG), 0, 0, 200, 50, 200, 25);
+	XPutImage(_dis, _win, gc, (north ? _whiteBG : _greyBG), 0, 0, 200, 50, 200, 25);
 	XDrawString(_dis, _win, gc, 250, 65, "North wave", 10);
-	XPutImage(_dis, _win, gc, (wave == WEST ? _whiteBG : _greyBG), 0, 0, 200, 75, 200, 25);
+	XPutImage(_dis, _win, gc, (west ? _whiteBG : _greyBG), 0, 0, 200, 75, 200, 25);
 	XDrawString(_dis, _win, gc, 250, 90, "West wave", 9);
-	XPutImage(_dis, _win, gc, (wave == ALL ? _whiteBG : _greyBG), 0, 0, 200, 100, 200, 25);
+	XPutImage(_dis, _win, gc, _greyBG, 0, 0, 200, 100, 200, 25);
 	XDrawString(_dis, _win, gc, 250, 115, "All wave", 8);
 	XPutImage(_dis, _win, gc, (rain ? _whiteBG : _greyBG), 0, 0, 400, 0, 200, 25);
 	XDrawString(_dis, _win, gc, 450, 15, "Rain water", 10);
@@ -155,22 +158,33 @@ bool		GraphicalDisplay::buttonEvent(GC gc, XEvent event)
 		if (y < 25 || (x > 200 && x < 400))
 		{
 			rise = false;
-			wave = NONE;
 			rain = false;
 			evaporate = false;
+			if (!(x > 200 && x < 400))
+			{
+				south = false;
+				east = false;
+				north = false;
+				west = false;
+			}
 		}
 		if (y < 25 && x < 200)
 			rise = (rise ? false : true);
 		else if (y < 25 && x < 400)
-			wave = (wave == SOUTH ? NONE : SOUTH);
+			south = (south ? false : true);
 		else if (y < 50 && x < 400)
-			wave = (wave == EAST ? NONE : EAST);
+			east = (east ?  false: true);
 		else if (y < 75 && x < 400)
-			wave = (wave == NORTH ? NONE : NORTH);
+			north = (north ? false: true);
 		else if (y < 100 && x < 400)
-			wave = (wave == WEST ? NONE : WEST);
+			west = (west ? false : true);
 		else if (y < 125 && x < 400)
-			wave = (wave == ALL ? NONE : ALL);
+		{
+			south = true;
+			east = true;
+			north = true;
+			west = true;
+		}
 		else if (y < 25 && x < 600)
 			rain = (rain ? false : true);
 		else if (y < 25 && x < 800)

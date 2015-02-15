@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/15 12:58:31 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/15 18:31:59 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,6 @@ class	GraphicalDisplay
 		void				expose(GC gc);
 		bool				buttonEvent(GC, XEvent);
 
-		enum	e_wave
-		{
-			NONE,
-			SOUTH,
-			EAST,
-			NORTH,
-			WEST,
-			ALL
-		};
-
 	private:
 		unsigned int	_width;
 		unsigned int	_height;
@@ -58,7 +48,10 @@ class	GraphicalDisplay
 		char			*_dataWhite;
 
 		bool			rise;
-		e_wave			wave;
+		bool			south;
+		bool			east;
+		bool			north;
+		bool			west;
 		bool			rain;
 		bool			evaporate;
 
