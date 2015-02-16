@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/16 14:23:05 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/16 14:34:21 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 //	Public Functions:
 
 //	Constructor
-Water::Water( float **& Map, unsigned int sizeX, unsigned int sizeY) : _Map(Map), _sizeX(sizeX), _sizeY(sizeY) {
+Water::Water( float ** Map, unsigned int sizeX, unsigned int sizeY) : _Map(Map), _sizeX(sizeX), _sizeY(sizeY) {
 }
 
 //	Destructor

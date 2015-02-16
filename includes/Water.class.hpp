@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/16 14:11:06 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/16 14:34:11 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Water {
 	public:
 		//Function
 		//	Constructor
-		Water( float **& Map, unsigned int sizeX, unsigned int sizeY);
+		Water( float ** Map, unsigned int sizeX, unsigned int sizeY);
 
 		//	Destructor
 		~Water( void );
@@ -66,7 +66,7 @@ class Water {
 
 		//Attribute
 		//	Map Data
-		float **& _Map;
+		float ** _Map;
 		unsigned int _sizeX;
 		unsigned int _sizeY;
 		t_water ** _CurMap;
