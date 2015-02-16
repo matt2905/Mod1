@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/15 18:37:00 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/16 15:23:07 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <X11/Xutil.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/select.h>
 #include "GraphicalDisplay.class.hpp"
 
 /*
@@ -43,12 +44,15 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 
 	_data = new char[_width * _height * 4];
 	_image = XCreateImage(_dis, visual, depth, XYPixmap, 0, _data, _width, _height, 32, 0);
+	_dataWater = new char[_width * _height * 4];
+	_imageWater = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataWater, _width, _height, 32, 0);
+
 	_dataGrey = new char[200 * 25 * 4];
 	_greyBG = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataGrey, 200, 25, 32, 0);
 	_dataWhite = new char[200 * 25 * 4];
 	_whiteBG = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataWhite, 200, 25, 32, 0);
 
-	rise = false;
+	rise = true;
 	rain = false;
 	evaporate = false;
 	south = false;
@@ -67,7 +71,6 @@ GraphicalDisplay::~GraphicalDisplay(void)
 	XCloseDisplay(_dis);
 }
 
-
 /*
 **	Setter
 */
@@ -78,6 +81,12 @@ bool		GraphicalDisplay::setMap(std::list<t_map> &mapHill)
 
 	_map->setMapHill(mapHill);
 
+	return (true);
+}
+
+bool		GraphicalDisplay::setWater(void)
+{
+	_water = new Water(_map->getMap(), _width, _height);
 	return (true);
 }
 
@@ -108,8 +117,31 @@ void		GraphicalDisplay::draw(float **tab)
 			else
 				color = 0x3A9D23;
 			XPutPixel(_image, proj_x, proj_y, color);
+			XPutPixel(_imageWater, proj_x, proj_y, color);
 		}
 	}
+}
+
+void		GraphicalDisplay::drawWater(float **tab)
+{
+	t_water			**map;
+	int				proj_x;
+	int				proj_y;
+
+	map = _water->getCurMap();
+	for (size_t x = 0; x < _width; x++)
+	{
+		for (size_t y = 0; y < _height; y++)
+		{
+			if (tab[x][y] < map[x][y].height)
+			{
+				proj_x = 0.5f * x - 0.5f * y + 500;
+				proj_y = tab[y][x] * -100 + 0.25f * x + 0.25f * y + 500;
+				XPutPixel(_imageWater, proj_x, proj_y, 0x0000FF);
+			}
+		}
+	}
+
 }
 
 void		GraphicalDisplay::setBackground(void)
@@ -126,7 +158,7 @@ void		GraphicalDisplay::setBackground(void)
 
 void		GraphicalDisplay::expose(GC gc)
 {
-	XPutImage(_dis, _win, gc, _image, 0, 0, 0, 0, _width, _height);
+	XPutImage(_dis, _win, gc, _imageWater, 0, 0, 0, 0, _width, _height);
 	XPutImage(_dis, _win, gc, (rise ? _whiteBG : _greyBG), 0, 0, 0, 0, 200, 25);
 	XDrawString(_dis, _win, gc, 50, 15, "Rise water", 10);
 	XPutImage(_dis, _win, gc, (south ? _whiteBG : _greyBG), 0, 0, 200, 0, 200, 25);
@@ -202,29 +234,55 @@ bool		GraphicalDisplay::buttonEvent(GC gc, XEvent event)
 */
 void		GraphicalDisplay::run(void)
 {
-	GC			gc;
-	float		**tab = _map->getMap();
-	bool		run = true;
+	GC				gc;
+	float			**tab = _map->getMap();
+	bool			run = true;
+	int				fd;
+	fd_set			in_fds;
+	struct timeval	tv;
 
+
+	fd = ConnectionNumber(_dis);
 	gc = XCreateGC(_dis, _win, 0, 0);
 	this->setBackground();
 	this->draw(tab);
 	while (run)
 	{
-		XNextEvent(_dis, &_report);
-		switch (_report.type) {
-			case Expose:
-				if (_report.xexpose.count == 0)
-					this->expose(gc);
-			break;
-			case KeyPress:
-				if (XLookupKeysym(&_report.xkey, 0) == XK_q)
-					run = false;
-			break;
-			case ButtonPress:
-				if (this->buttonEvent(gc, _report))
-					run = false;
-			break;
+		FD_ZERO(&in_fds);
+		FD_SET(fd, &in_fds);
+
+		tv.tv_usec = 10000;
+		tv.tv_sec = 0;
+
+		if (select(fd + 1, &in_fds, 0, 0, &tv))
+		{
+			XNextEvent(_dis, &_report);
+			switch (_report.type) {
+				case Expose:
+					if (_report.xexpose.count == 0)
+						this->expose(gc);
+				break;
+				case KeyPress:
+					if (XLookupKeysym(&_report.xkey, 0) == XK_q)
+						run = false;
+				break;
+				case ButtonPress:
+					if (this->buttonEvent(gc, _report))
+						run = false;
+				break;
+			}
+		}
+		else
+		{
+			if (rise)
+				_water->Flood();
+			if (south || east ||  north || west)
+				_water->Waves(north, south, east, west);
+			if (rain)
+				_water->Rainy();
+			_water->Flow();
+			this->drawWater(tab);
+			this->expose(gc);
 		}
 	}
 	XFreeGC(_dis, gc);

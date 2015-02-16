@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/01 11:11:30 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/16 14:30:43 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ int		main(int argc, char **argv)
 	GraphicalDisplay		gd(1000, 1000);
 
 	gd.setMap(mapHill);
+	gd.setWater();
 
 	gd.run();
 
