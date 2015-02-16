@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/16 13:28:45 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/16 14:23:05 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ Water::Water( float **& Map, unsigned int sizeX, unsigned int sizeY) : _Map(Map)
 //	Destructor
 Water::~Water( void ) {
 	for ( unsigned int x = 0; x < _sizeX; x++ ) {
-		delete [] this->_CurMap[y]
+		delete [] this->_CurMap[x];
 	}
 	delete [] this->_CurMap;
 }
@@ -43,14 +43,14 @@ void Water::Rainy( void ) {
 
 	//	Give density (lowest is the number, higher is the density)
 	unsigned int density = 1000;
-	unsigned int precipitate = (sizeX * sizeY) / density;
+	unsigned int precipitate = (_sizeX * _sizeY) / density;
 	unsigned int x;
 	unsigned int y;
 
 	srand (time(NULL));
 	for ( unsigned int rain = 0; rain < precipitate; rain++ ) {
-		x = rand() % sizeX;
-		y = rand() % sizeY;
+		x = rand() % _sizeX;
+		y = rand() % _sizeY;
 		if ( _Map[x][y] + _CurMap[x][y].height + rainy < 1)
 			_CurMap[x][y].height += rainy;
 	}
@@ -62,7 +62,7 @@ void Water::Waves( bool n, bool s, bool e, bool w ) {
 	float waves = 0.01;
 
 	//	Check lowest hight
-	float zmin = wavesMin(n, s, e, w, waves);
+	float zmin = WavesMin(n, s, e, w) + waves;
 
 	//	Increase hight of wave
 	for ( unsigned int x = 0; x <= _sizeX && n; x++ ) {
@@ -100,7 +100,7 @@ void Water::Flood( void ) {
 
 	//	Check lowest point of map
 	if ( zmin < 1 && hillmin < 1 && hillmin > 0 ) {
-		for ( unsigned int x = 0; x <= _sizeX && hillm > 0; x++ ) {
+		for ( unsigned int x = 0; x <= _sizeX && hillmin > 0; x++ ) {
 			for ( unsigned int y = 0; y <= _sizeY && hillmin > 0; y++ ) {
 				if ( _Map[x][y] < hillmin ) {
 					hillmin = _Map[x][y];
@@ -125,8 +125,8 @@ void Water::Flood( void ) {
 
 //	Flowing
 void Water::Flow( void ) {
-	speed();
-	drop();
+	Speed();
+	Drop();
 }
 
 /* ************************************************************************** */
@@ -152,33 +152,33 @@ void Water::Drop( void ) {
 				hgt = _CurMap[x][y].height + _Map[x][y] + drop;
 
 				//	Check highest difference
-				if (x < _sizeX && speed < hgt - _CurMap[x+1][y].height + Map[x+1][y]){
-					speed = hgt - _CurMap[x+1][y].height + Map[x+1][y];
+				if ( x < _sizeX && speed < hgt - _CurMap[x+1][y].height + _Map[x+1][y] ) {
+					speed = hgt - _CurMap[x+1][y].height + _Map[x+1][y];
 					xMin = x;
 					yMin = y;
 					dir = PI / 4;
 				}
-				if (y < _sizeY && speed < hgt - _CurMap[x][y+1].height + Map[x][y+1]){
-					speed = hgt - _CurMap[x][y+1].height + Map[x][y+1];
+				if ( y < _sizeY && speed < hgt - _CurMap[x][y+1].height + _Map[x][y+1] ) {
+					speed = hgt - _CurMap[x][y+1].height + _Map[x][y+1];
 					xMin = x;
 					yMin = y;
 					dir = 3 * PI / 4;
 				}
-				if ( x > 0 && speed < hgt - _CurMap[x+1][y].height + Map[x+1][y] ) {
-					speed = hgt - _CurMap[x-1][y].height + Map[x-1][y];
+				if ( x > 0 && speed < hgt - _CurMap[x+1][y].height + _Map[x+1][y] ) {
+					speed = hgt - _CurMap[x-1][y].height + _Map[x-1][y];
 					xMin = x;
 					yMin = y;
 					dir =  5 * PI / 4;
 				}
-				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height + Map[x][y-1] ) {
-					speed = hgt - _CurMap[x][y-1].height + Map[x][y-1];
+				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height + _Map[x][y-1] ) {
+					speed = hgt - _CurMap[x][y-1].height + _Map[x][y-1];
 					xMin = x;
 					yMin = y;
 					dir = 7 / PI / 4;
 				}
 				if ( speed > 0 ) {
-					_CurMap[xMin][yMin] += drop;
-					Way(x, y, dir, speed);
+					_CurMap[xMin][yMin].height += drop;
+					DropNew(x, y, dir, speed);
 				}
 			}
 		}
@@ -187,6 +187,7 @@ void Water::Drop( void ) {
 
 //		Drop modification
 void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
+	double PI = std::atan(1.0)*4;
 	float tmp;
 	float way = _CurMap[x][y].dir;
 
@@ -197,59 +198,65 @@ void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
 	//	new way value ((x / (x + y)) + (y / (x + y)))
 	tmp = _CurMap[x][y].dir * (_CurMap[x][y].speed / (_CurMap[x][y].speed + speed));
 	_CurMap[x][y].dir = tmp;
-	_CurMap[x][y].dir += dir * (speed / (_CurMap[x][y] + speed));
+	_CurMap[x][y].dir += dir * (speed / (_CurMap[x][y].speed + speed));
 	while ( _CurMap[x][y].dir >= 2*PI )
 		_CurMap[x][y].dir -= 2*PI;
 
 	//	new speed value (V(x * x + y * y))
 	tmp = pow((sin(way) * _CurMap[x][y].speed + sin(dir) * speed), 2);
 	tmp += pow((cos(way) * _CurMap[x][y].speed + cos(dir) * speed), 2);
-	_CurMap[x][y] = sqrt(tmp);
-	if ( _CurMap[x][y] > 1 )
-		_CurMap[x][y] = 1;
+	_CurMap[x][y].speed = sqrt(tmp);
+	if ( _CurMap[x][y].speed > 1 )
+		_CurMap[x][y].speed = 1;
 }
+
+//if ((n = x) == (n += y));?
 
 //		Applicate speed
 void Water::Speed( void ) {
 	double PI = std::atan(1.0)*4;
 	float slow = 0.5;
-	float drop;
+	float drop = 0.0;
 
-	for ( unsigned int x = 0; x < _sizeX) {
-		for ( unsigned int y = 0; y < _sizeY ) {
+	for ( unsigned int x = 0; x < _sizeX; x++ ) {
+		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			if ( _CurMap[x][y].speed > 0 ) {
 
 				//	Verify valid direction (sens && edge && height)
 				drop = _Map[x][y] + _CurMap[x][y].height + _CurMap[x][y].speed;
 				if ( _CurMap[x][y].dir >= 0 && _CurMap[x][y].dir < (PI/2)
 						&& (x + 1) < _sizeX
-						&& drop > (drop -= _CurMap[x+1][y].height + _Map[x+1][y]) ) {
+						&& drop > _CurMap[x+1][y].height + _Map[x+1][y] ) {
+					drop -= _CurMap[x+1][y].height + _Map[x+1][y];
 
 					//	Transfert of water
 					_CurMap[x + 1][y].height += drop;
 					_CurMap[x][y].height -= drop;
 
 					//	Transfert of power
-					SpeedNew(x, y, x + 1, y);
+					SpeedNew(x, y, x + 1, y, slow);
 				}
 				else if ( _CurMap[x][y].dir >= (PI/2) && _CurMap[x][y].dir < PI
 						&& (y + 1) < _sizeY
-						&& drop > (drop -= _CurMap[x][y+1].height + _Map[x][y+1]) ) {
+						&& drop > _CurMap[x][y+1].height + _Map[x][y+1] ) {
+					drop -= _CurMap[x][y+1].height + _Map[x][y+1];
 					_CurMap[x][y + 1].height += drop;
 					_CurMap[x][y].height -= drop;
-					SpeedNew(x, y, x, y + 1);
+					SpeedNew(x, y, x, y + 1, slow);
 				} else if ( _CurMap[x][y].dir >= PI && _CurMap[x][y].dir < (3*PI/2)
 						&& x > 0
-						&& drop > (drop -= _CurMap[x-1][y].height + _Map[x-1][y]) ) {
+						&& drop > _CurMap[x-1][y].height + _Map[x-1][y] ) {
+					drop -= _CurMap[x-1][y].height + _Map[x-1][y];
 					_CurMap[x - 1][y].height += drop;
 					_CurMap[x][y].height -= drop;
-					SpeedNew(x, y, x - 1, y);
+					SpeedNew(x, y, x - 1, y, slow);
 				} else if ( _CurMap[x][y].dir >= (3*PI/2) && _CurMap[x][y].dir < 2*PI
 						&& y > 0
-						&& drop > (drop -= _CurMap[x][y-1].height + _Map[x][y-1]) ) {
+						&& drop > _CurMap[x][y-1].height + _Map[x][y-1] ) {
+					drop -= _CurMap[x][y-1].height + _Map[x][y-1];
 					_CurMap[x][y - 1].height += drop;
 					_CurMap[x][y].height -= drop;
-					SpeedNew(x, y, x, y - 1);
+					SpeedNew(x, y, x, y - 1, slow);
 				} else {
 
 					//	Counter speed
@@ -265,12 +272,13 @@ void Water::Speed( void ) {
 
 //		Speed modification
 void Water::SpeedNew( unsigned int x1, unsigned int y1,
-		unsigned int x2, unsigned int y2 ) {
+		unsigned int x2, unsigned int y2, float slow ) {
+	double PI = std::atan(1.0)*4;
 	float tmp;
 	float way = _CurMap[x2][y2].dir;
 
 	//	no divide by 0
-	if ( _CurMap[x1][y1].speed + _CurMap[x2][y2]speed == 0 )
+	if ( _CurMap[x1][y1].speed + _CurMap[x2][y2].speed == 0 )
 		return;
 
 	//	new value of x2,y2 way ((x / (x + y)) + (y / (x + y)))
@@ -295,13 +303,13 @@ void Water::SpeedNew( unsigned int x1, unsigned int y1,
 }
 
 //	Wave functions
-float Water::WavesMin( bool n, bool s, bool e, bool w, float waves ) {
+float Water::WavesMin( bool n, bool s, bool e, bool w ) {
 	float zmin = 1;
 
 	//	Check lowest point of the edge
 	if ( n ) {
 		for ( unsigned int x = 0; x <= _sizeX; x++ ) {
-			if ( _CurMap[x][0].height + _Map[x][0] + < zmin )
+			if ( _CurMap[x][0].height + _Map[x][0] < zmin )
 				zmin = _CurMap[x][0].height + _Map[x][0];
 		}
 	}
@@ -312,13 +320,13 @@ float Water::WavesMin( bool n, bool s, bool e, bool w, float waves ) {
 		}
 	}
 	if ( w ) {
-		for ( unsigned int y = 0; x <= _sizeY; y++ ) {
+		for ( unsigned int y = 0; y <= _sizeY; y++ ) {
 			if ( _CurMap[0][y].height + _Map[0][y] < zmin )
 				zmin = _CurMap[0][y].height + _Map[0][y];
 		}
 	}
 	if ( e ) {
-		for ( unsigned int y = 0; x <= _sizeY; y++ ) {
+		for ( unsigned int y = 0; y <= _sizeY; y++ ) {
 			if ( _CurMap[_sizeX][y].height + _Map[_sizeX][y] < zmin )
 				zmin = _CurMap[_sizeX][y].height + _Map[_sizeX][y];
 		}

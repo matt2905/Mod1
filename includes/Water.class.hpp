@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/16 13:29:49 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/16 14:11:06 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,13 @@
 # include "Water.h"
 # include <cmath>
 # include <ctime>
+# include <cstdlib>
 
 class Water {
 	public:
 		//Function
 		//	Constructor
-		Water( float ** Map, unsigned int sizeX, unsigned int sizeY);
+		Water( float **& Map, unsigned int sizeX, unsigned int sizeY);
 
 		//	Destructor
 		~Water( void );
@@ -54,7 +55,7 @@ class Water {
 		void DropNew( unsigned int x, unsigned int y, float dir, float speed );
 		void Speed( void );
 		void SpeedNew( unsigned int x1, unsigned int y1,
-				unsigned int x2, unsigned int y2 );
+				unsigned int x2, unsigned int y2, float slow );
 //		void Moving( void );
 
 		//	Wave functions

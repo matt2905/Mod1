@@ -6,7 +6,7 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/01/31 19:56:16 by mmartin          ###   ########.fr        #
+#    Updated: 2015/02/16 14:23:49 by tbalea           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ LIB			=	-L /usr/X11R6/lib -lX11
 SRC			=	srcs/main.cpp					\
 				srcs/GraphicalDisplay.class.cpp	\
 				srcs/Map.class.cpp				\
+				srcs/Water.class.cpp			\
 
 OBJ			=	$(patsubst %.cpp, $(DOBJ)%.o, $(SRC))
 
