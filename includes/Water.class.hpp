@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/16 14:34:11 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/16 19:54:00 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ class Water {
 		void Waves( bool n, bool s, bool e, bool w );
 		void Flood( void );
 
+		//	Clear
+		void ClearCurMap( void );
+
 		//	Flowing
 		void Flow( void );
 	private:
@@ -55,14 +58,11 @@ class Water {
 		void DropNew( unsigned int x, unsigned int y, float dir, float speed );
 		void Speed( void );
 		void SpeedNew( unsigned int x1, unsigned int y1,
-				unsigned int x2, unsigned int y2, float slow );
+				unsigned int x2, unsigned int y2, float slow, float drop );
 //		void Moving( void );
 
 		//	Wave functions
 		float WavesMin( bool n, bool s, bool e, bool w );
-
-		//	Clear
-		void ClearCurMap( void );
 
 		//Attribute
 		//	Map Data
