@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/16 16:32:10 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/16 17:40:19 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,15 +105,15 @@ void		GraphicalDisplay::draw(float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = tab[y][x] * -100 + 0.25f * x + 0.25f * y + 500;
-			if (tab[y][x] > 0.8)
-				color = 0xFFFF00 + tab[y][x] * 255;
-			else if (tab[y][x] > 0.6)
-				color = 0x795227 + tab[y][x];
-			else if (tab[y][x] > 0.2)
-				color = 0x87591A + tab[y][x];
-			else if (tab[y][x] > 0.01)
-				color = 0x8B6C42 + tab[y][x];
+			proj_y = tab[x][y] * -100 + 0.25f * x + 0.25f * y + 500;
+			if (tab[x][y] > 0.8)
+				color = 0xFFFF00 + tab[x][y] * 255;
+			else if (tab[x][y] > 0.6)
+				color = 0x795227 + tab[x][y];
+			else if (tab[x][y] > 0.2)
+				color = 0x87591A + tab[x][y];
+			else if (tab[x][y] > 0.01)
+				color = 0x8B6C42 + tab[x][y];
 			else
 				color = 0x3A9D23;
 			XPutPixel(_image, proj_x, proj_y, color);
@@ -137,21 +137,21 @@ void		GraphicalDisplay::drawWater(float **tab)
 			if (tab[x][y] < map[x][y].height)
 			{
 				proj_x = 0.5f * x - 0.5f * y + 500;
-				proj_y = map[y][x].height * -100 + 0.25f * x + 0.25f * y + 500;
+				proj_y = map[x][y].height * -100 + 0.25f * x + 0.25f * y + 500;
 				color = 0x0000FF;
 			}
 			else
 			{
 				proj_x = 0.5f * x - 0.5f * y + 500;
-				proj_y = tab[y][x] * -100 + 0.25f * x + 0.25f * y + 500;
-				if (tab[y][x] > 0.8)
-					color = 0xFFFF00 + tab[y][x] * 255;
-				else if (tab[y][x] > 0.6)
-					color = 0x795227 + tab[y][x];
-				else if (tab[y][x] > 0.2)
-					color = 0x87591A + tab[y][x];
-				else if (tab[y][x] > 0.01)
-					color = 0x8B6C42 + tab[y][x];
+				proj_y = tab[x][y] * -100 + 0.25f * x + 0.25f * y + 500;
+				if (tab[x][y] > 0.8)
+					color = 0xFFFF00 + tab[x][y] * 255;
+				else if (tab[x][y] > 0.6)
+					color = 0x795227 + tab[x][y];
+				else if (tab[x][y] > 0.2)
+					color = 0x87591A + tab[x][y];
+				else if (tab[x][y] > 0.01)
+					color = 0x8B6C42 + tab[x][y];
 				else
 					color = 0x3A9D23;
 			}
