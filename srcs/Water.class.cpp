@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/16 15:21:18 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/16 15:43:41 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,38 +151,38 @@ void Water::Drop( void ) {
 
 	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
-			if ( _CurMap[x][y].height > 0 ) {
-				xMin = _sizeX;
-				yMin = _sizeY;
-				speed = 0;
-				hgt = _CurMap[x][y].height + _Map[x][y] + drop;
+			if ( _CurMap[x][y].height > drop ) {
+				xMin = 0;
+				yMin = 0;
+				speed = drop;
+				hgt = _CurMap[x][y].height + _Map[x][y];
 
 				//	Check highest difference
-				if ( x + 1 < _sizeX && speed < hgt - _CurMap[x+1][y].height + _Map[x+1][y] ) {
+				if ( x + 1 < _sizeX && speed < hgt - _CurMap[x+1][y].height - _Map[x+1][y] ) {
 					speed = hgt - _CurMap[x+1][y].height + _Map[x+1][y];
 					xMin = x;
 					yMin = y;
 					dir = PI / 4;
 				}
-				if ( y + 1 < _sizeY && speed < hgt - _CurMap[x][y+1].height + _Map[x][y+1] ) {
+				if ( y + 1 < _sizeY && speed < hgt - _CurMap[x][y+1].height - _Map[x][y+1] ) {
 					speed = hgt - _CurMap[x][y+1].height + _Map[x][y+1];
 					xMin = x;
 					yMin = y;
 					dir = 3 * PI / 4;
 				}
-				if ( x > 0 && speed < hgt - _CurMap[x-1][y].height + _Map[x-1][y] ) {
+				if ( x > 0 && speed < hgt - _CurMap[x-1][y].height - _Map[x-1][y] ) {
 					speed = hgt - _CurMap[x-1][y].height + _Map[x-1][y];
 					xMin = x;
 					yMin = y;
 					dir =  5 * PI / 4;
 				}
-				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height + _Map[x][y-1] ) {
+				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height - _Map[x][y-1] ) {
 					speed = hgt - _CurMap[x][y-1].height + _Map[x][y-1];
 					xMin = x;
 					yMin = y;
 					dir = 7 / PI / 4;
 				}
-				if ( speed > 0 ) {
+				if ( speed > drop ) {
 					_CurMap[xMin][yMin].height += drop;
 					DropNew(x, y, dir, speed);
 				}
@@ -227,6 +227,7 @@ void Water::Speed( void ) {
 	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			if ( _CurMap[x][y].speed > 0 ) {
+				printf("Coucou\n");
 
 				//	Verify valid direction (sens && edge && height)
 				drop = _Map[x][y] + _CurMap[x][y].height + _CurMap[x][y].speed;
