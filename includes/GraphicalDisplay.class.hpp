@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/16 14:59:52 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/02/16 19:08:24 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class	GraphicalDisplay
 
 		void				run(void);
 		void				draw(float **);
-		void				drawWater(float **);
+		void				drawWater(GC, float **);
 		void				setBackground(void);
 
 		void				expose(GC gc);
