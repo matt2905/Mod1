@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/16 21:01:39 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/17 17:01:51 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ t_water ** Water::getCurMap( void ) {
 
 //	Scenario
 void Water::Rainy( void ) {
+	double PI = std::atan(1.0)*8;
 
 	//	Give speed of flowing
 	float rainy = 0.01;
@@ -61,12 +62,18 @@ void Water::Rainy( void ) {
 	for ( unsigned int rain = 0; rain < precipitate; rain++ ) {
 		x = rand() % _sizeX;
 		y = rand() % _sizeY;
-		if ( _Map[x][y] + _CurMap[x][y].height + rainy < 1)
+		if ( _Map[x][y] + _CurMap[x][y].height + rainy < 1) {
 			_CurMap[x][y].height += rainy;
+
+			//	Give random direction
+			if ( _CurMap[x][y].height == rainy )
+				_CurMap[x][y].dir = (rand() * PI) / (RAND_MAX * PI);
+		}
 	}
 }
 
 void Water::Waves( bool n, bool s, bool e, bool w ) {
+	double PI = std::atan(1.0);
 
 	//	Give speed of flowing
 	float waves = 0.01;
@@ -80,34 +87,40 @@ void Water::Waves( bool n, bool s, bool e, bool w ) {
 			_CurMap[x][0].height += waves;
 		if ( _CurMap[x][0].height + _Map[x][0] > 1 )
 			_CurMap[x][0].height = 1 - _Map[x][0];
+		_CurMap[x][0].dir = 3 * PI; 
 	}
 	for ( unsigned int x = 0; x < _sizeX && s; x++ ) {
-		if ( _CurMap[x][_sizeY - 1].height + _Map[x][_sizeX] < zmin + waves )
-			_CurMap[x][_sizeY - 1].height += waves;
-		if ( _CurMap[x][_sizeY - 1].height + _Map[x][_sizeX] > 1 )
-			_CurMap[x][_sizeX - 1].height = 1 - _Map[x][_sizeX];
+		if ( _CurMap[x][_sizeY-1].height + _Map[x][_sizeY-1] < zmin + waves )
+			_CurMap[x][_sizeY-1].height += waves;
+		if ( _CurMap[x][_sizeY-1].height + _Map[x][_sizeY-1] > 1 )
+			_CurMap[x][_sizeY-1].height = 1 - _Map[x][_sizeY-1];
+		_CurMap[x][_sizeY-1].dir = 7 * PI;
 	}
 	for ( unsigned int y = 0; y < _sizeY && e; y++ ) {
 		if ( _CurMap[0][y].height + _Map[0][y] < zmin + waves )
 			_CurMap[0][y].height += waves;
 		if ( _CurMap[0][y].height + _Map[0][y] > 1 )
 			_CurMap[0][y].height = 1 - _Map[0][y];
+		_CurMap[0][y].dir = PI;
 	}
 	for ( unsigned int y = 0; y < _sizeY && w; y++ ) {
-		if ( _CurMap[_sizeX - 1][y].height + _Map[_sizeX - 1][y] < zmin + waves )
-			_CurMap[_sizeX - 1][y].height += waves;
-		if ( _CurMap[_sizeX - 1][y].height + _Map[_sizeX - 1][y] > 1 )
-			_CurMap[_sizeX - 1][y].height = 1 - _Map[_sizeX - 1][y];
+		if ( _CurMap[_sizeX-1][y].height + _Map[_sizeX-1][y] < zmin + waves )
+			_CurMap[_sizeX-1][y].height += waves;
+		if ( _CurMap[_sizeX-1][y].height + _Map[_sizeX-1][y] > 1 )
+			_CurMap[_sizeX-1][y].height = 1 - _Map[_sizeX-1][y];
+		_CurMap[_sizeX-1][y].dir = 5* PI;
 	}
 }
 
 void Water::Flood( void ) {
+	double PI = std::atan(1.0)*8;
 
 	//	Give speed of flowing
 	float flood = 0.01;
 	float hillmin = _Map[0][0];
 	float zmin = _Map[0][0] + _CurMap[0][0].height;
 
+	srand (time(NULL));
 	//	Check lowest point of map
 	if ( zmin < 1 && hillmin < 1 && hillmin > 0 ) {
 		for ( unsigned int x = 0; x < _sizeX && hillmin > 0; x++ ) {
@@ -132,6 +145,9 @@ void Water::Flood( void ) {
 			//	limit flood
 			if ( _Map[x][y] + _CurMap[x][y].height > 1 )
 				_CurMap[x][y].height = 1 - _Map[x][y];
+
+			if ( _CurMap[x][y].height == flood )
+				_CurMap[x][y].dir = (rand() * PI) / (RAND_MAX * PI);
 		}
 	}
 }
