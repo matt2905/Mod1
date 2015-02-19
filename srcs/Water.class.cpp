@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/17 17:01:51 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/20 00:41:16 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,8 @@ void Water::ClearCurMap( void ) {
 	for ( unsigned x = 0; x < _sizeX; x++) {
 		for ( unsigned y = 0; y < _sizeY; y++) {
 			_CurMap[x][y].height = 0;
+			_CurMap[x][y].speed = 0.0;
+			_CurMap[x][y].dir = 0.0;
 		}
 	}
 }
@@ -178,8 +180,6 @@ void Water::Drop( void ) {
 	float speed;
 	float hgt;
 	float dir;
-	unsigned int xMin;
-	unsigned int yMin;
 
 	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
@@ -189,36 +189,22 @@ void Water::Drop( void ) {
 
 				//	Check highest difference
 				if ( x + 1 < _sizeX && speed < hgt - _CurMap[x+1][y].height - _Map[x+1][y] ) {
-					speed = hgt - _CurMap[x+1][y].height + _Map[x+1][y];
-					xMin = x + 1;
-					yMin = y;
+					speed = hgt - _CurMap[x+1][y].height - _Map[x+1][y];
 					dir = PI / 4;
 				}
 				if ( y + 1 < _sizeY && speed < hgt - _CurMap[x][y+1].height - _Map[x][y+1] ) {
-					speed = hgt - _CurMap[x][y+1].height + _Map[x][y+1];
-					xMin = x;
-					yMin = y + 1;
+					speed = hgt - _CurMap[x][y+1].height - _Map[x][y+1];
 					dir = 3*PI / 4;
 				}
 				if ( x > 0 && speed < hgt - _CurMap[x-1][y].height - _Map[x-1][y] ) {
-					speed = hgt - _CurMap[x-1][y].height + _Map[x-1][y];
-					xMin = x - 1;
-					yMin = y;
+					speed = hgt - _CurMap[x-1][y].height - _Map[x-1][y];
 					dir =  5*PI / 4;
 				}
 				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height - _Map[x][y-1] ) {
-					speed = hgt - _CurMap[x][y-1].height + _Map[x][y-1];
-					xMin = x;
-					yMin = y - 1;
+					speed = hgt - _CurMap[x][y-1].height - _Map[x][y-1];
 					dir = 7*PI / 4;
 				}
 				if ( speed > drop ) {
-					_CurMap[xMin][yMin].height += drop;
-					if ( _CurMap[xMin][yMin].height > 1 )
-						_CurMap[xMin][yMin].height = 1;
-					_CurMap[x][y].height -= drop;
-					if ( _CurMap[x][y].height < 0 )
-						_CurMap[x][y].height = 0;
 					DropNew(x, y, dir, speed);
 				}
 			}
@@ -237,6 +223,10 @@ void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
 		return;
 
 	//	new way value ((x / (x + y)) + (y / (x + y)))
+	if ( _CurMap[x][y].dir - dir > PI )
+		dir += 2 * PI;
+	if ( dir - _CurMap[x][y].dir > PI )
+		_CurMap[x][y].dir += 2 * PI;
 	tmp = _CurMap[x][y].dir * (_CurMap[x][y].speed / (_CurMap[x][y].speed + speed));
 	_CurMap[x][y].dir = tmp;
 	_CurMap[x][y].dir += dir * (speed / (_CurMap[x][y].speed + speed));
@@ -244,8 +234,8 @@ void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
 		_CurMap[x][y].dir -= 2*PI;
 
 	//	new speed value (V(x * x + y * y))
-	tmp = pow((sin(way) * _CurMap[x][y].speed + sin(dir) * speed), 2);
-	tmp += pow((cos(way) * _CurMap[x][y].speed + cos(dir) * speed), 2);
+	tmp = pow(((sin(way) * _CurMap[x][y].speed) + (sin(dir) * speed)), 2);
+	tmp += pow(((cos(way) * _CurMap[x][y].speed) + (cos(dir) * speed)), 2);
 	_CurMap[x][y].speed = sqrt(tmp);
 	if ( _CurMap[x][y].speed > 1 )
 		_CurMap[x][y].speed = 1;
@@ -287,7 +277,7 @@ void Water::Speed( void ) {
 						&& y > 0
 						&& drop > _CurMap[x][y-1].height + _Map[x][y-1] ) {
 					drop -= _CurMap[x][y-1].height + _Map[x][y-1];
-					SpeedNew(x, y, x, y-1, slow, drop/2);
+					SpeedNew(x, y, x, y-1, slow, drop * slow);
 				} else {
 
 					//	Counter speed
@@ -337,6 +327,7 @@ void Water::SpeedNew( unsigned int x1, unsigned int y1,
 	_CurMap[x2][y2].speed = sqrt(tmp);
 	if (_CurMap[x2][y2].speed > 1)
 		_CurMap[x2][y2].speed = 1;
+	_CurMap[x2][y2].speed *= slow;
 
 	//	new value of x1,y1 speed
 	_CurMap[x1][y1].speed *= slow;
