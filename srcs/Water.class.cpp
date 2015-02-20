@@ -6,15 +6,15 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/20 00:41:16 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/20 18:21:04 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Water.class.hpp"
 
-//	TO DO:
-//	Seek if flowing function is usefull
-//	flowings functions
+//TO DO:
+//		Boost speed use
+//		Seek error in display
 /* ************************************************************************** */
 //	Public Functions:
 
@@ -82,6 +82,7 @@ void Water::Waves( bool n, bool s, bool e, bool w ) {
 	float zmin = WavesMin(n, s, e, w) + waves;
 
 	//	Increase hight of wave
+	//		North wave
 	for ( unsigned int x = 0; x < _sizeX && n; x++ ) {
 		if ( _CurMap[x][0].height + _Map[x][0] < zmin + waves )
 			_CurMap[x][0].height += waves;
@@ -89,6 +90,7 @@ void Water::Waves( bool n, bool s, bool e, bool w ) {
 			_CurMap[x][0].height = 1 - _Map[x][0];
 		_CurMap[x][0].dir = 3 * PI; 
 	}
+	//		South wave
 	for ( unsigned int x = 0; x < _sizeX && s; x++ ) {
 		if ( _CurMap[x][_sizeY-1].height + _Map[x][_sizeY-1] < zmin + waves )
 			_CurMap[x][_sizeY-1].height += waves;
@@ -96,6 +98,7 @@ void Water::Waves( bool n, bool s, bool e, bool w ) {
 			_CurMap[x][_sizeY-1].height = 1 - _Map[x][_sizeY-1];
 		_CurMap[x][_sizeY-1].dir = 7 * PI;
 	}
+	//		Est wave
 	for ( unsigned int y = 0; y < _sizeY && e; y++ ) {
 		if ( _CurMap[0][y].height + _Map[0][y] < zmin + waves )
 			_CurMap[0][y].height += waves;
@@ -103,6 +106,7 @@ void Water::Waves( bool n, bool s, bool e, bool w ) {
 			_CurMap[0][y].height = 1 - _Map[0][y];
 		_CurMap[0][y].dir = PI;
 	}
+	//		West wave
 	for ( unsigned int y = 0; y < _sizeY && w; y++ ) {
 		if ( _CurMap[_sizeX-1][y].height + _Map[_sizeX-1][y] < zmin + waves )
 			_CurMap[_sizeX-1][y].height += waves;
@@ -149,6 +153,51 @@ void Water::Flood( void ) {
 			if ( _CurMap[x][y].height == flood )
 				_CurMap[x][y].dir = (rand() * PI) / (RAND_MAX * PI);
 		}
+	}
+}
+
+void Water::Evapor( void ) {
+
+	//	Give evaporate speed;
+	float hot = 0.01;
+
+	for ( unsigned int x = 0; x < _sizeX; x++ ) {
+		for ( unsigned int y = 0; y < _sizeY; y++ ) {
+			_CurMap[x][y].height -= hot;
+			if ( _CurMap[x][y].height <= 0.0 ) {
+				_CurMap[x][y].height = 0;
+				_CurMap[x][y].speed = 0;
+			}
+		}
+	}
+}
+
+void Water::DiscWorld( bool n, bool s, bool e, bool w ) {
+	double PI = std::atan(1.0);
+
+	//	North fall
+	for ( unsigned int x = 0; x < _sizeX && n; x++ ) {
+		_CurMap[x][0].height = 0;
+		_CurMap[x][0].speed = 0;
+		_CurMap[x][0].dir = PI; 
+	}
+	//	South fall
+	for ( unsigned int x = 0; x < _sizeX && s; x++ ) {
+		_CurMap[x][_sizeY-1].height = 0;
+		_CurMap[x][_sizeY-1].speed = 0;
+		_CurMap[x][_sizeY-1].dir = 5 * PI;
+	}
+	//	Est fall
+	for ( unsigned int y = 0; y < _sizeY && e; y++ ) {
+		_CurMap[0][y].height = 0;
+		_CurMap[0][y].speed = 0;
+		_CurMap[0][y].dir = 3 * PI;
+	}
+	//	West fall
+	for ( unsigned int y = 0; y < _sizeY && w; y++ ) {
+		_CurMap[_sizeX-1][y].height = 0;
+		_CurMap[_sizeX-1][y].speed = 0;
+		_CurMap[_sizeX-1][y].dir = 7 * PI;
 	}
 }
 
@@ -243,6 +292,8 @@ void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
 
 //if ((n = x) == (n += y));?
 
+//TO DO:
+//		Boost speed (x + n where n = (int)(speed * 10));
 //		Applicate speed
 void Water::Speed( void ) {
 	double PI = std::atan(1.0)*4;

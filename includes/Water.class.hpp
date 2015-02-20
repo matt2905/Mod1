@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/16 19:54:00 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/20 17:06:09 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ class Water {
 		void Rainy( void );
 		void Waves( bool n, bool s, bool e, bool w );
 		void Flood( void );
+		void Evapor( void );
+		void DiscWorld( bool n, bool s, bool e, bool w );
 
 		//	Clear
 		void ClearCurMap( void );
