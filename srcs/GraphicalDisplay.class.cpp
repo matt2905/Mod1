@@ -38,7 +38,7 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	depth = DefaultDepth(_dis, screen);
 	attributes.background_pixel = XBlackPixel(_dis, screen);
 
-	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, 1500, 700, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
+	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, 1500, 900, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
 	XMapWindow(_dis, _win);
 	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
 
@@ -108,31 +108,19 @@ void		GraphicalDisplay::draw(float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = tab[x][y] * -100 + 0.25f * x + 0.25f * y; 
+			proj_y = tab[x][y] * -100 + 0.25f * x + 0.25f * y + 200; 
 			i = proj_y * _image->bytes_per_line + proj_x * 4;
 			if (tab[x][y] > 0.8)
 			{
-				r = 255;
-				b = 255;
-				g = tab[x][y] * 255;
-			}
-			else if (tab[x][y] > 0.6)
-			{
-				r = 0;
-				g = tab[x][y] * 255;
-				b = 255;
-			}
-			else if (tab[x][y] > 0.2)
-			{
-				r = 0;
+				r = tab[x][y] * 255;
 				g = tab[x][y] * 255;
 				b = 255;
 			}
 			else if (tab[x][y] > 0.01)
 			{
-				r = 0;
-				g = tab[x][y] * 255;
-				b = 255;
+				r = 73 + tab[x][y] * 255;
+				g = 49 + tab[x][y] * 255;
+				b = 28 + tab[x][y] * 255 / 2;
 			}
 			else
 			{
@@ -140,6 +128,12 @@ void		GraphicalDisplay::draw(float **tab)
 				g = 255;
 				b = 0;
 			}
+			if (r > 255)
+				r = 255;
+			if (g > 255)
+				g = 255;
+			if (b > 255)
+				b = 255;
 			_data[i] = b;
 			_data[i + 1] = g;
 			_data[i + 2] = r;
@@ -147,6 +141,9 @@ void		GraphicalDisplay::draw(float **tab)
 	}
 }
 
+/*
+**	Draw water in image.
+*/
 void		GraphicalDisplay::drawWater(GC gc, float **tab)
 {
 	int				r;
@@ -163,7 +160,7 @@ void		GraphicalDisplay::drawWater(GC gc, float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = 0.25f * x + 0.25 * y;
+			proj_y = 0.25f * x + 0.25 * y + 200;
 			if (tab[x][y] < map[x][y].height)
 			{
 				proj_y += map[x][y].height * -100;
@@ -176,27 +173,15 @@ void		GraphicalDisplay::drawWater(GC gc, float **tab)
 				proj_y += tab[x][y] * -100;
 				if (tab[x][y] > 0.8)
 				{
-					r = 255;
-					b = 255;
-					g = tab[x][y] * 255;
-				}
-				else if (tab[x][y] > 0.6)
-				{
-					r = 0;
-					g = tab[x][y] * 255;
-					b = 255;
-				}
-				else if (tab[x][y] > 0.2)
-				{
-					r = 0;
+					r = tab[x][y] * 255;
 					g = tab[x][y] * 255;
 					b = 255;
 				}
 				else if (tab[x][y] > 0.01)
 				{
-					r = 0;
-					g = tab[x][y] * 255;
-					b = 255;
+					r = 73 + tab[x][y] * 255;
+					g = 49 + tab[x][y] * 255;
+					b = 28 + tab[x][y] * 255 / 2;
 				}
 				else
 				{
@@ -204,6 +189,13 @@ void		GraphicalDisplay::drawWater(GC gc, float **tab)
 					g = 255;
 					b = 0;
 				}
+				if (r > 255)
+					r = 255;
+				if (g > 255)
+					g = 255;
+				if (b > 255)
+					b = 255;
+
 			}
 			i = proj_y * _imageWater->bytes_per_line + proj_x * 4;
 			if ( i < 0)
@@ -216,6 +208,10 @@ void		GraphicalDisplay::drawWater(GC gc, float **tab)
 	XPutImage(_dis, _win, gc, _imageWater, 0, 0, 200, 200, _width, _height);
 }
 
+
+/*
+**	Draw image foreground for button.
+*/
 void		GraphicalDisplay::setBackground(void)
 {
 	for (int x = 0; x < 200; x++)
@@ -228,6 +224,10 @@ void		GraphicalDisplay::setBackground(void)
 	}
 }
 
+
+/*
+**	Expose, redraw each button and the image.
+*/
 void		GraphicalDisplay::expose(GC gc)
 {
 	XPutImage(_dis, _win, gc, _imageWater, 0, 0, 200, 200, _width, _height);
@@ -254,6 +254,10 @@ void		GraphicalDisplay::expose(GC gc)
 	XFlush(_dis);
 }
 
+
+/*
+**	On click check position x | y for button event.
+*/
 bool		GraphicalDisplay::buttonEvent(GC gc, XEvent event)
 {
 	int		x = event.xbutton.x;
@@ -335,6 +339,7 @@ void		GraphicalDisplay::run(void)
 	this->setBackground();
 	this->draw(tab);
 	memcpy(_dataWater, _data, _height * _width * 4);
+
 	while (run)
 	{
 		while (XPending(_dis))
@@ -363,6 +368,7 @@ void		GraphicalDisplay::run(void)
 				_water->Waves(north, south, east, west);
 			if (rain)
 				_water->Rainy();
+			_water->Flow();
 			this->drawWater(gc, tab);
 		}
 	}
