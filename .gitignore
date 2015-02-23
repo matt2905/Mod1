@@ -8,6 +8,9 @@
 *.gch
 *.pch
 
+# Depencies files
+*.d
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
