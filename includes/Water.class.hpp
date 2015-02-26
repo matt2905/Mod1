@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/02/20 17:06:09 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/02/24 14:57:21 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class Water {
 		void Drop( void );
 		void DropNew( unsigned int x, unsigned int y, float dir, float speed );
 		void Speed( void );
-		void SpeedNew( unsigned int x1, unsigned int y1,
+		float SpeedNew( unsigned int x1, unsigned int y1,
 				unsigned int x2, unsigned int y2, float slow, float drop );
 //		void Moving( void );
 
@@ -68,6 +68,10 @@ class Water {
 
 		//Attribute
 		//	Map Data
+		bool _w;
+		bool _s;
+		bool _e;
+		bool _n;
 		float ** _Map;
 		unsigned int _sizeX;
 		unsigned int _sizeY;
