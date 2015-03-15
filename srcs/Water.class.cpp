@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/09 14:57:44 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/15 18:14:06 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void Water::Rainy( void ) {
 }
 
 void Water::Waves( bool n, bool s, bool e, bool w ) {
-	double PI = std::atan(1.0);
+//	double PI = std::atan(1.0);
 
 	//	Give speed of flowing
 	float waves = 0.01;
@@ -91,36 +91,36 @@ void Water::Waves( bool n, bool s, bool e, bool w ) {
 			_CurMap[x][0].height += waves;
 		if ( _CurMap[x][0].height + _Map[x][0] > 1 )
 			_CurMap[x][0].height = 1 - _Map[x][0];
-		_CurMap[x][0].dir = 5 * PI;
+/*		_CurMap[x][0].dir = 5 * PI;
 		_CurMap[x][0].speed = 0.5;
-	}
+*/	}
 	//		South wave
 	for ( unsigned int x = 0; x < _sizeX && s; x++ ) {
 		if ( _CurMap[x][_sizeY-1].height + _Map[x][_sizeY-1] < zmin + waves )
 			_CurMap[x][_sizeY-1].height += waves;
 		if ( _CurMap[x][_sizeY-1].height + _Map[x][_sizeY-1] > 1 )
 			_CurMap[x][_sizeY-1].height = 1 - _Map[x][_sizeY-1];
-		_CurMap[x][_sizeY-1].dir = PI;
+/*		_CurMap[x][_sizeY-1].dir = PI;
 		_CurMap[x][_sizeY-1].speed = 0.5;
-	}
+*/	}
 	//		West wave
 	for ( unsigned int y = 0; y < _sizeY && w; y++ ) {
 		if ( _CurMap[0][y].height + _Map[0][y] < zmin + waves )
 			_CurMap[0][y].height += waves;
 		if ( _CurMap[0][y].height + _Map[0][y] > 1 )
 			_CurMap[0][y].height = 1 - _Map[0][y];
-		_CurMap[_sizeX-1][y].dir = 7 * PI;
+/*		_CurMap[_sizeX-1][y].dir = 7 * PI;
 		_CurMap[0][y].speed = 0.5;
-	}
+*/	}
 	//		Est wave
 	for ( unsigned int y = 0; y < _sizeY && e; y++ ) {
 		if ( _CurMap[_sizeX-1][y].height + _Map[_sizeX-1][y] < zmin + waves )
 			_CurMap[_sizeX-1][y].height += waves;
 		if ( _CurMap[_sizeX-1][y].height + _Map[_sizeX-1][y] > 1 )
 			_CurMap[_sizeX-1][y].height = 1 - _Map[_sizeX-1][y];
-		_CurMap[0][y].dir = 3 * PI;
+/*		_CurMap[0][y].dir = 3 * PI;
 		_CurMap[_sizeX-1][y].speed = 0.5;
-	}
+*/	}
 }
 
 void Water::Flood( void ) {
@@ -243,6 +243,7 @@ void Water::Drop( void ) {
 	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			if ( _CurMap[x][y].height > drop ) {
+				
 				speed = drop;
 				hgt = _CurMap[x][y].height + _Map[x][y];
 
@@ -284,10 +285,12 @@ void Water::Drop( void ) {
 */				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height - _Map[x][y-1] ) {
 					speed = hgt - _CurMap[x][y-1].height - _Map[x][y-1];
 					dir = PI;
-				}
-				if ( speed > drop ) {
+				}	
+
+				if ( speed > drop )
 					DropNew(x, y, dir, speed);
-				}
+//				printf("loli POWER !\nmax x = %d, max y = %d\n\n", _sizeX, _sizeY);
+//				printf("loli x=%d y=%d speed=%f\n", x, y, speed);
 			}
 		}
 	}
@@ -295,31 +298,15 @@ void Water::Drop( void ) {
 
 //		Drop modification
 void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
-	double PI = std::atan(1.0);
-	float tmp;
+//	float gravity = 1;
 	float way = _CurMap[x][y].dir;
 
-	//	no divide by 0
-	if ( _CurMap[x][y].speed + speed == 0 )
-		return;
-
-	//	new way value ((x / (x + y)) + (y / (x + y)))
-	if ( _CurMap[x][y].dir - dir > (PI * 4) )
-		dir += 8 * PI;
-	if ( dir - _CurMap[x][y].dir > (PI * 4) )
-		_CurMap[x][y].dir += 8 * PI;
-	tmp = _CurMap[x][y].dir * (_CurMap[x][y].speed / (_CurMap[x][y].speed + speed));
-	_CurMap[x][y].dir = tmp;
-	_CurMap[x][y].dir += dir * (speed / (_CurMap[x][y].speed + speed));
-	while ( _CurMap[x][y].dir >= 8 * PI )
-		_CurMap[x][y].dir -= 8 * PI;
-
+//	speed = speed * gravity;
+	//	new way value ((x / (x + y)) + (y / (x + y))
+	NewDir(x, y, dir, speed);
+	
 	//	new speed value (V(x * x + y * y))
-	tmp = pow(((sin(way) * _CurMap[x][y].speed) + (sin(dir) * speed)), 2);
-	tmp += pow(((cos(way) * _CurMap[x][y].speed) + (cos(dir) * speed)), 2);
-	_CurMap[x][y].speed = sqrt(tmp);
-	if ( _CurMap[x][y].speed > 1 )
-		_CurMap[x][y].speed = 1;
+	NewSpd(x, y, dir, speed, way);
 }
 
 //if ((n = x) == (n += y));?
@@ -329,13 +316,11 @@ void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
 //		Applicate speed
 void Water::Speed( void ) {
 	double PI = std::atan(1.0)*4;
-	float slow = 0.6;
-	float rlow = 0.0000;
-	float lim = 0.0001;
-/*	float tmp = 0;*/
+	float lim = 0.001;
 	float drop;
+/*	float tmp = 0;
 
-/*	for ( unsigned int x = 0; x < _sizeX; x++ ) {
+	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			tmp += _CurMap[x][y].height;
 		}
@@ -344,186 +329,110 @@ void Water::Speed( void ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			if ( _CurMap[x][y].speed > 0 ) {
 
+
 				//	Verify valid direction (sens && edge && height)
 				drop = _Map[x][y] + _CurMap[x][y].height + _CurMap[x][y].speed;
 				//	x + 1
 				for ( unsigned int n = 1;
 						_CurMap[x][y].dir >= (3*PI/2) && _CurMap[x][y].dir < 2*PI &&
 						(x + n) < _sizeX &&
-						drop >= _CurMap[x+n-1][y+n-1].height + _Map[x][y] &&
-						drop > _CurMap[x+n][y].height + _Map[x+n][y] &&
+						drop > _CurMap[x+n][y].height + _Map[x+n][y] + lim &&
 						(n == 1 ||
-						drop >= _CurMap[x+n][y].height + _Map[x+n][y] + lim);
+						drop >= _CurMap[x+1][y].height + _Map[x+1][y] + lim);
 						n++ ) {
-					drop -= (_CurMap[x+n][y].height + _Map[x+n][y]);
-					drop = SpeedNew(x, y, x+n, y, slow, drop, rlow);
+					drop = Transfert(x, y, x+n, y, drop);
 				}
 				// x + 1 && y + 1
-/*				else if ( _CurMap[x][y].dir >= (PI/4) && _CurMap[x][y].dir < (PI/2)
-						&& (x + 1) < _sizeX && (y + 1) < _sizeY
-						&& drop > _CurMap[x+1][y+1].height + _Map[x+1][y+1] ) {
-					drop -= (_CurMap[x+1][y+1].height + _Map[x+1][y+1]);
-					drop = SpeedNew(x, y, x+1, y+1, slow, drop/2);
-					for ( unsigned int n = 2;
-							(y + n) < _sizeY && (x + n) <_sizeX &&
-							drop - _CurMap[x+n][y+n].height + _Map[x+n][y+n] >inertie;
-							n++ ) {
-						drop -= (_CurMap[x+n][y+n].height + _Map[x+n][y+n]);
-						drop = SpeedNew(x, y, x+n, y+n, slow, drop/2);
-					}
-				}*/
+/*				dir >= (PI/4) && dir < (PI/2)
+				NOT AVAIBLE*/
 				//	y + 1
 				for ( unsigned int n = 1;
 						_CurMap[x][y].dir >= PI && _CurMap[x][y].dir < (3*PI/2) &&
 						(y + n) < _sizeY &&
-						drop >= _CurMap[x][y+n-1].height + _Map[x][y+n-1] &&
-						drop > _CurMap[x][y+n].height + _Map[x][y+n] &&
+						drop > _CurMap[x][y+n].height + _Map[x][y+n] + lim &&
 						(n == 1 ||
-						drop >= _CurMap[x][y+n].height + _Map[x][y+n] + lim);
+						drop >= _CurMap[x][y+1].height + _Map[x][y+1] + lim);
 						n++ ) {
-					drop -= (_CurMap[x][y+n].height + _Map[x][y+n]);
-					drop = SpeedNew(x, y, x, y+n, slow, drop, rlow);
+					drop = Transfert(x, y, x, y+n, drop);
 				}
 				// x - 1 && y + 1
-/*				else if ( _CurMap[x][y].dir >= (PI/4) && _CurMap[x][y].dir < (PI/2)
-						&& (x - 1) > 0 && (y + 1) < _sizeY
-						&& drop > _CurMap[x-1][y+1].height + _Map[x-1][y+1] ) {
-					drop -= (_CurMap[x-1][y+1].height + _Map[x-1][y+1]);
-					drop = SpeedNew(x, y, x-1, y+1, slow, drop/2);
-					for ( unsigned int n = 2;
-							(y + n) < _sizeY && x >= n &&
-							drop - _CurMap[x-n][y+n].height + _Map[x-n][y+n] >inertie;
-							n++ ) {
-						drop -= (_CurMap[x-n][y+n].height + _Map[x+n][y+n]);
-						drop = SpeedNew(x, y, x-n, y+n, slow, drop/2);
-					}
-				}*/
+/*				dir >= (PI/4) && dir < (PI/2)
+				NOT ABAIBLE*/
 				// x - 1
 				for ( unsigned int n = 1;
 						_CurMap[x][y].dir >= (PI/2) && _CurMap[x][y].dir < PI &&
 						x >= n &&
-						drop >= _CurMap[x-n+1][y].height + _Map[x-n+1][y] &&
-						drop > _CurMap[x-n][y].height + _Map[x-n][y] &&
+						drop > _CurMap[x-n][y].height + _Map[x-n][y] + lim &&
 						(n == 1 ||
-						drop >= _CurMap[x-n][y].height + _Map[x-n][y] + lim);
+						drop >= _CurMap[x-1][y].height + _Map[x-1][y] + lim);
 						n++ ) {
-					drop -= (_CurMap[x-n][y].height + _Map[x-n][y]);
-					drop = SpeedNew(x, y, x-n, y, slow, drop, rlow);
+					drop = Transfert(x, y, x-n, y, drop);
 				}
 				// x - 1 && y - 1
-/*				else if ( _CurMap[x][y].dir >= (PI/4) && _CurMap[x][y].dir < (PI/2)
-						&& x > 0 && y > 0
-						&& drop > _CurMap[x-1][y-1].height + _Map[x-1][y-1] ) {
-					drop -= (_CurMap[x-1][y-1].height + _Map[x-1][y-1]);
-					drop = SpeedNew(x, y, x-1, y-1, slow, drop/2);
-					for ( unsigned int n = 2;
-							y >= n && x >= n &&
-							drop - _CurMap[x-n][y-n].height + _Map[x-n][y-n] >inertie;
-							n++ ) {
-						drop -= (_CurMap[x-n][y-n].height + _Map[x-n][y-n]);
-						drop = SpeedNew(x, y, x-n, y-n, slow, drop/2);
-					}
-				}*/
+/*				dir >= (PI/4) && .dir < (PI/2)
+				NOT AVAIBLE*/
 				// y - 1
 				for ( unsigned int n = 1;
 						_CurMap[x][y].dir >= 0 && _CurMap[x][y].dir < (PI/2) &&
 						y >= n &&
-						drop >= _CurMap[x][y-n+1].height + _Map[x][y-n+1] &&
-						drop > _CurMap[x][y-n].height + _Map[x][y-n] &&
+						drop > _CurMap[x][y-n].height + _Map[x][y-n] + lim &&
 						(n == 1 ||
-						drop >= _CurMap[x][y-n].height + _Map[x][y-n] + lim);
+						drop >= _CurMap[x][y-1].height + _Map[x][y-1] + lim);
 						n++ ) {
-					drop -= (_CurMap[x][y-n].height + _Map[x][y-n]);
-					drop = SpeedNew(x, y, x, y-n, slow, drop, rlow);
+					drop = Transfert(x, y, x, y-n, drop);
 				}
 				// x + 1 && y - 1
-/*				else if ( _CurMap[x][y].dir >= (PI/4) && _CurMap[x][y].dir < (PI/2)
-						&& (x + 1) < _sizeX && y > 0
-						&& drop > _CurMap[x+1][y-1].height + _Map[x+1][y-1] ) {
-					drop -= (_CurMap[x+1][y-1].height + _Map[x+1][y-1]);
-					drop = SpeedNew(x, y, x+1, y-1, slow, drop/2);
-					for ( unsigned int n = 2;
-							y >= n && (x + n) <_sizeX &&
-							drop - _CurMap[x+n][y-n].height + _Map[x+n][y-n] >inertie;
-							n++ ) {
-						drop -= (_CurMap[x+n][y-n].height + _Map[x+n][y-n]);
-						drop = SpeedNew(x, y, x+n, y-n, slow, drop/2);
-					}
-				}*/
+/*				dir >= (PI/4) && dir < (PI/2)
+				NOT AVAIBLE*/
 				//	Counter speed
-				if ((_CurMap[x][y].speed = _CurMap[x][y].speed - rlow) < 0)
-					_CurMap[x][y].speed = 0;
-				_CurMap[x][y].speed *= slow;
-/*				_CurMap[x][y].dir += PI;
-				if ( _CurMap[x][y].dir > 2 * PI)
-					_CurMap[x][y].dir -= 2 * PI;
-*/			}
+				NewSpd(x, y, -1, -1, -1);
+
+			}
 		}
-	}
-	printf("loli\n"/*tmp = %f\n", tmp*/);
-/*	for ( unsigned int x = 0; x < _sizeX; x++ ) {
+	}/*
+	printf("quantite = %f\n", tmp);
+	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			tmp -= _CurMap[x][y].height;
 		}
 	}
-	printf("tmp = %f\n", tmp);*/
+	printf("perte/ajout = %f\n\n", tmp);*/
 }
 
 //		Speed modification
-float Water::SpeedNew( unsigned int x1, unsigned int y1,
-		unsigned int x2, unsigned int y2, float slow, float drop, float rlow ) {
-	double PI = std::atan(1.0)*4;
-	float tmp;
+float Water::Transfert( unsigned int x1, unsigned int y1,
+		unsigned int x2, unsigned int y2, float drop ) {
+	float slow = 0.6;
 	float way = _CurMap[x2][y2].dir;
-
-	//	Inertie data
-	float inertie = 0.4;
+	float transfert = 0.3;
 
 	//	Transfert of Water
-	if (_CurMap[x1][y1].height < (drop * inertie) )
-		drop = _CurMap[x1][y1].height;
-	if ( (_CurMap[x2][y2].height + _Map[x2][y2] + (drop * inertie)) > 1 )
-		drop = 1 - (_CurMap[x2][y2].height + _Map[x2][y2]);
-	_CurMap[x1][y1].height -= drop * inertie;
-	_CurMap[x2][y2].height += drop * inertie;
-	if ( _CurMap[x2][y2].height + _Map[x2][y2] > 1 ) {
+	drop = _CurMap[x1][y1].height;
+	if ( (_CurMap[x2][y2].height + _Map[x2][y2] + (drop * transfert)) > 1 )
+		drop = (1 - (_CurMap[x2][y2].height + _Map[x2][y2])) * (1 / transfert);
+	_CurMap[x1][y1].height = _CurMap[x1][y1].height - (drop * transfert);
+	_CurMap[x2][y2].height = _CurMap[x2][y2].height + (drop * transfert);
+/*	if ( _CurMap[x2][y2].height + _Map[x2][y2] > 1 ) {
 		tmp = _CurMap[x2][y2].height + _Map[x2][y2] - 1;
 		_CurMap[x2][y2].height -= tmp;
 		_CurMap[x1][y1].height += tmp;
-	}
-	drop = _Map[x1][y1] + _CurMap[x1][y1].height + _CurMap[x1][y1].speed;
+	}*/
 
 	//	Transfert of Power
 	//	no divide by 0
 	if ( _CurMap[x1][y1].speed + _CurMap[x2][y2].speed == 0 )
-		return drop;
+		return (_CurMap[x1][y1].height + _CurMap[x1][y1].speed + _Map[x1][y1]);
 
 	//	new value of x2,y2 way ((x / (x + y)) + (y / (x + y)))
-	tmp = _CurMap[x2][y2].speed / (_CurMap[x1][y1].speed + _CurMap[x2][y2].speed);
-	_CurMap[x2][y2].dir = _CurMap[x2][y2].dir * tmp;
-	tmp = _CurMap[x1][y1].speed / (_CurMap[x1][y1].speed + _CurMap[x2][y2].speed);
-	_CurMap[x2][y2].dir += _CurMap[x1][y1].dir * tmp;
-	while ( _CurMap[x2][y2].dir >= 2*PI )
-		_CurMap[x2][y2].dir -= 2*PI;
+	NewDir(x2, y2, _CurMap[x2][y2].dir, _CurMap[x2][y2].speed);
 
 	//	new value of x2,y2 speed (V(x * x + y * y))
-	tmp = pow(sin(way) * _CurMap[x2][y2].speed +
-			(sin(_CurMap[x1][y1].dir) * _CurMap[x1][y1].speed), 2);
-	tmp += pow(cos(way) * _CurMap[x2][y2].speed +
-			(cos(_CurMap[x1][y1].dir) * _CurMap[x1][y1].speed), 2);
-	_CurMap[x2][y2].speed = sqrt(tmp);
-	if ((_CurMap[x2][y2].speed = _CurMap[x2][y2].speed - slow) < 0)
-		_CurMap[x2][y2].speed = 0;
-	if (_CurMap[x2][y2].speed > 1)
-		_CurMap[x2][y2].speed = 1;
-	_CurMap[x2][y2].speed *= slow;
+	NewSpd(x2, y2, _CurMap[x2][y2].dir, _CurMap[x2][y2].speed, way);
 
-	//	new value of x1,y1 speed
-	if ((_CurMap[x1][y1].speed = _CurMap[x1][y1].speed - rlow) < 0)
-		_CurMap[x1][y1].speed = 0;
 	_CurMap[x1][y1].speed *= slow;
-	return drop;
+	return (_CurMap[x1][y1].height + _CurMap[x1][y1].speed + _Map[x1][y1]);
 }
+
 
 //	Wave functions
 float Water::WavesMin( bool n, bool s, bool e, bool w ) {
@@ -555,4 +464,47 @@ float Water::WavesMin( bool n, bool s, bool e, bool w ) {
 		}
 	}
 	return zmin;
+}
+
+void Water::NewDir(unsigned int x, unsigned int y, float dir, float speed) {
+	double PI = std::atan(1.0);
+	float speedTotal = speed + _CurMap[x][y].speed;
+
+	if ( dir - _CurMap[x][y].dir > (PI * 4) )
+		_CurMap[x][y].dir += 8 * PI;
+	else if ( _CurMap[x][y].dir - dir > (PI * 4) )
+		dir += 8 * PI;
+	_CurMap[x][y].dir = _CurMap[x][y].dir * (_CurMap[x][y].speed / speedTotal);
+	_CurMap[x][y].dir += dir * (speed / speedTotal);
+	while ( _CurMap[x][y].dir >= 8 * PI )
+		_CurMap[x][y].dir -= 8 * PI;
+	while ( _CurMap[x][y].dir < 0 )
+		_CurMap[x][y].dir += 8 * PI;
+}
+//ª;
+void Water::NewSpd(unsigned int x, unsigned int y, float dir, float spd, float odir) {
+	double PI = std::atan(1.0)*4;
+	float slow = 0.6;
+	float rlow = 0.001;
+	float tmp;
+
+
+	if (dir == spd && spd == odir && odir == -1) {
+		if ((_CurMap[x][y].speed = (_CurMap[x][y].speed * slow) - rlow) < 0)
+			_CurMap[x][y].speed = 0;
+		_CurMap[x][y].dir += PI;
+		while ( _CurMap[x][y].dir > 2 * PI )
+			_CurMap[x][y].dir -= 2 * PI;
+		return ;
+	}
+	tmp = pow(sin(odir) * _CurMap[x][y].speed + (sin(dir) * spd), 2);
+	tmp += pow(cos(odir) * _CurMap[x][y].speed + (cos(dir) * spd), 2);
+	if (tmp < 0)
+		tmp = tmp * -1;
+	_CurMap[x][y].speed = sqrt(tmp);
+	if ((_CurMap[x][y].speed = _CurMap[x][y].speed - rlow) < 0)
+		_CurMap[x][y].speed = 0;
+	if (_CurMap[x][y].speed > 1)
+		_CurMap[x][y].speed = 1;
+	return ;
 }

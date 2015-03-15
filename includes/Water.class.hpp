@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/03 17:27:19 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/15 15:28:24 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,10 @@ class Water {
 		void Drop( void );
 		void DropNew( unsigned int x, unsigned int y, float dir, float speed );
 		void Speed( void );
-		float SpeedNew( unsigned int x1, unsigned int y1, unsigned int x2,
-				unsigned int y2, float slow, float drop, float rlow );
+		float Transfert( unsigned int x1, unsigned int y1, unsigned int x2,
+				unsigned int y2, float drop );
+		void NewDir(unsigned int x, unsigned int y, float dir, float speed);
+		void NewSpd(unsigned int x, unsigned int y, float dir, float spd, float odir);
 //		void Moving( void );
 
 		//	Wave functions
