@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/16 19:57:57 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/15 15:48:23 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,9 +161,9 @@ void		GraphicalDisplay::drawWater(GC gc, float **tab)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
 			proj_y = 0.25f * x + 0.25 * y + 200;
-			if (tab[x][y] < map[x][y].height)
+			if (map[x][y].height > 0)
 			{
-				proj_y += map[x][y].height * -100;
+				proj_y += (map[x][y].height + tab[x][y])* -100;
 				r = 0;
 				g = 0;
 				b = 255;
