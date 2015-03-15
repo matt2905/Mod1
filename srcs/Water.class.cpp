@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/09 14:57:44 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/15 15:30:11 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,7 +460,6 @@ void Water::Speed( void ) {
 */			}
 		}
 	}
-	printf("loli\n"/*tmp = %f\n", tmp*/);
 /*	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			tmp -= _CurMap[x][y].height;
