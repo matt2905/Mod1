@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/15 18:14:06 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/15 18:48:53 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 //	Constructor
 Water::Water( float ** Map, unsigned int sizeX, unsigned int sizeY) :
 	_w(true), _s(true), _e(true), _n(true), _Map(Map), _sizeX(sizeX), _sizeY(sizeY) {
+	double PI = std::atan(1.0) * 8;
 	_CurMap = new t_water*[_sizeX];
 	for (unsigned int x = 0; x < _sizeX; x++)
 	{
@@ -31,7 +32,7 @@ Water::Water( float ** Map, unsigned int sizeX, unsigned int sizeY) :
 		{
 			_CurMap[x][y].height = 0;
 			_CurMap[x][y].speed = 0;
-			_CurMap[x][y].dir = 0;
+			_CurMap[x][y].dir = PI;
 		}
 	}
 }
@@ -70,7 +71,7 @@ void Water::Rainy( void ) {
 
 			//	Give random direction
 			if ( _CurMap[x][y].height == rainy )
-				_CurMap[x][y].dir = (rand() * PI) / (RAND_MAX * PI);
+				_CurMap[x][y].dir = ((rand() + 1.0) * PI) / ((1.0 + RAND_MAX) * PI);
 		}
 	}
 }
@@ -154,7 +155,7 @@ void Water::Flood( void ) {
 				_CurMap[x][y].height += flood;
 
 			if ( _CurMap[x][y].height == flood )
-				_CurMap[x][y].dir = (rand() * PI) / (RAND_MAX * PI);
+				_CurMap[x][y].dir = ((1.0 + rand()) * PI) / ((RAND_MAX + 1.0) * PI);
 
 			//	limit flood
 			if ( _Map[x][y] + _CurMap[x][y].height > 1 )
@@ -210,11 +211,12 @@ void Water::DiscWorld( bool n, bool s, bool e, bool w ) {
 
 //	Clear
 void Water::ClearCurMap( void ) {
+	double PI = std::atan(1.0) * 8;
 	for ( unsigned x = 0; x < _sizeX; x++) {
 		for ( unsigned y = 0; y < _sizeY; y++) {
 			_CurMap[x][y].height = 0;
 			_CurMap[x][y].speed = 0.0;
-			_CurMap[x][y].dir = 0.0;
+			_CurMap[x][y].dir = PI;
 		}
 	}
 }
@@ -334,7 +336,7 @@ void Water::Speed( void ) {
 				drop = _Map[x][y] + _CurMap[x][y].height + _CurMap[x][y].speed;
 				//	x + 1
 				for ( unsigned int n = 1;
-						_CurMap[x][y].dir >= (3*PI/2) && _CurMap[x][y].dir < 2*PI &&
+						_CurMap[x][y].dir > (3*PI/2) && _CurMap[x][y].dir <= 2*PI &&
 						(x + n) < _sizeX &&
 						drop > _CurMap[x+n][y].height + _Map[x+n][y] + lim &&
 						(n == 1 ||
@@ -347,7 +349,7 @@ void Water::Speed( void ) {
 				NOT AVAIBLE*/
 				//	y + 1
 				for ( unsigned int n = 1;
-						_CurMap[x][y].dir >= PI && _CurMap[x][y].dir < (3*PI/2) &&
+						_CurMap[x][y].dir > PI && _CurMap[x][y].dir <= (3*PI/2) &&
 						(y + n) < _sizeY &&
 						drop > _CurMap[x][y+n].height + _Map[x][y+n] + lim &&
 						(n == 1 ||
@@ -360,7 +362,7 @@ void Water::Speed( void ) {
 				NOT ABAIBLE*/
 				// x - 1
 				for ( unsigned int n = 1;
-						_CurMap[x][y].dir >= (PI/2) && _CurMap[x][y].dir < PI &&
+						_CurMap[x][y].dir > (PI/2) && _CurMap[x][y].dir <= PI &&
 						x >= n &&
 						drop > _CurMap[x-n][y].height + _Map[x-n][y] + lim &&
 						(n == 1 ||
@@ -373,7 +375,7 @@ void Water::Speed( void ) {
 				NOT AVAIBLE*/
 				// y - 1
 				for ( unsigned int n = 1;
-						_CurMap[x][y].dir >= 0 && _CurMap[x][y].dir < (PI/2) &&
+						_CurMap[x][y].dir > 0 && _CurMap[x][y].dir <= (PI/2) &&
 						y >= n &&
 						drop > _CurMap[x][y-n].height + _Map[x][y-n] + lim &&
 						(n == 1 ||
@@ -470,15 +472,17 @@ void Water::NewDir(unsigned int x, unsigned int y, float dir, float speed) {
 	double PI = std::atan(1.0);
 	float speedTotal = speed + _CurMap[x][y].speed;
 
+	if (speedTotal == 0)
+		return ;
 	if ( dir - _CurMap[x][y].dir > (PI * 4) )
 		_CurMap[x][y].dir += 8 * PI;
 	else if ( _CurMap[x][y].dir - dir > (PI * 4) )
 		dir += 8 * PI;
 	_CurMap[x][y].dir = _CurMap[x][y].dir * (_CurMap[x][y].speed / speedTotal);
 	_CurMap[x][y].dir += dir * (speed / speedTotal);
-	while ( _CurMap[x][y].dir >= 8 * PI )
+	while ( _CurMap[x][y].dir > 8 * PI )
 		_CurMap[x][y].dir -= 8 * PI;
-	while ( _CurMap[x][y].dir < 0 )
+	while ( _CurMap[x][y].dir <= 0 )
 		_CurMap[x][y].dir += 8 * PI;
 }
 //ª;
@@ -499,8 +503,6 @@ void Water::NewSpd(unsigned int x, unsigned int y, float dir, float spd, float o
 	}
 	tmp = pow(sin(odir) * _CurMap[x][y].speed + (sin(dir) * spd), 2);
 	tmp += pow(cos(odir) * _CurMap[x][y].speed + (cos(dir) * spd), 2);
-	if (tmp < 0)
-		tmp = tmp * -1;
 	_CurMap[x][y].speed = sqrt(tmp);
 	if ((_CurMap[x][y].speed = _CurMap[x][y].speed - rlow) < 0)
 		_CurMap[x][y].speed = 0;
