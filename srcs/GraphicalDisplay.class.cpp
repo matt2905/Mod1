@@ -38,19 +38,19 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	depth = DefaultDepth(_dis, screen);
 	attributes.background_pixel = XBlackPixel(_dis, screen);
 
-	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, 1500, 1500, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
+	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, 1500, 900, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
 	XMapWindow(_dis, _win);
 	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
 
 	_data = new char[_width * _height * 4];
-	_image = XCreateImage(_dis, visual, depth, XYPixmap, 0, _data, _width, _height, 32, 0);
+	_image = XCreateImage(_dis, visual, depth, ZPixmap, 0, _data, _width, _height, 32, 0);
 	_dataWater = new char[_width * _height * 4];
-	_imageWater = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataWater, _width, _height, 32, 0);
+	_imageWater = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataWater, _width, _height, 32, 0);
 
 	_dataGrey = new char[200 * 25 * 4];
-	_greyBG = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataGrey, 200, 25, 32, 0);
+	_greyBG = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataGrey, 200, 25, 32, 0);
 	_dataWhite = new char[200 * 25 * 4];
-	_whiteBG = XCreateImage(_dis, visual, depth, XYPixmap, 0, _dataWhite, 200, 25, 32, 0);
+	_whiteBG = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataWhite, 200, 25, 32, 0);
 
 	rise = false;
 	rain = false;
@@ -96,37 +96,63 @@ bool		GraphicalDisplay::setWater(void)
 */
 void		GraphicalDisplay::draw(float **tab)
 {
-	unsigned int	color;
+	int				r;
+	int				g;
+	int				b;
 	int				proj_x;
 	int				proj_y;
+	int				i;
 
 	for (size_t x = 0; x < _width; x++)
 	{
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = tab[x][y] * -100 + 0.25f * x + 0.25f * y + 500;
+			proj_y = tab[x][y] * -100 + 0.25f * x + 0.25f * y + 200; 
+			i = proj_y * _image->bytes_per_line + proj_x * 4;
 			if (tab[x][y] > 0.8)
-				color = 0xFFFF00 + tab[x][y] * 255;
-			else if (tab[x][y] > 0.6)
-				color = 0x795227 + tab[x][y];
-			else if (tab[x][y] > 0.2)
-				color = 0x87591A + tab[x][y];
+			{
+				r = tab[x][y] * 255;
+				g = tab[x][y] * 255;
+				b = 255;
+			}
 			else if (tab[x][y] > 0.01)
-				color = 0x8B6C42 + tab[x][y];
+			{
+				r = 73 + tab[x][y] * 255;
+				g = 49 + tab[x][y] * 255;
+				b = 28 + tab[x][y] * 255 / 2;
+			}
 			else
-				color = 0x3A9D23;
-			XPutPixel(_image, proj_x, proj_y, color);
+			{
+				r = 0;
+				g = 255;
+				b = 0;
+			}
+			if (r > 255)
+				r = 255;
+			if (g > 255)
+				g = 255;
+			if (b > 255)
+				b = 255;
+			_data[i] = b;
+			_data[i + 1] = g;
+			_data[i + 2] = r;
 		}
 	}
 }
 
+/*
+**	Draw water in image.
+*/
 void		GraphicalDisplay::drawWater(GC gc, float **tab)
 {
-	unsigned int	color;
+	int				r;
+	int				g;
+	int				b;
 	t_water			**map;
 	int				proj_x;
 	int				proj_y;
+	int				i;
 
 	map = _water->getCurMap();
 	for (size_t x = 0; x < _width; x++)
@@ -134,32 +160,58 @@ void		GraphicalDisplay::drawWater(GC gc, float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = 0.25f * x + 0.25 * y + 500;
+			proj_y = 0.25f * x + 0.25 * y + 200;
 			if (tab[x][y] < map[x][y].height)
 			{
 				proj_y += map[x][y].height * -100;
-				color = 0x0000FF;
+				r = 0;
+				g = 0;
+				b = 255;
 			}
 			else
 			{
 				proj_y += tab[x][y] * -100;
 				if (tab[x][y] > 0.8)
-					color = 0xFFFF00 + tab[x][y] * 255;
-				else if (tab[x][y] > 0.6)
-					color = 0x795227 + tab[x][y];
-				else if (tab[x][y] > 0.2)
-					color = 0x87591A + tab[x][y];
+				{
+					r = tab[x][y] * 255;
+					g = tab[x][y] * 255;
+					b = 255;
+				}
 				else if (tab[x][y] > 0.01)
-					color = 0x8B6C42 + tab[x][y];
+				{
+					r = 73 + tab[x][y] * 255;
+					g = 49 + tab[x][y] * 255;
+					b = 28 + tab[x][y] * 255 / 2;
+				}
 				else
-					color = 0x3A9D23;
+				{
+					r = 0;
+					g = 255;
+					b = 0;
+				}
+				if (r > 255)
+					r = 255;
+				if (g > 255)
+					g = 255;
+				if (b > 255)
+					b = 255;
+
 			}
-			XPutPixel(_imageWater, proj_x, proj_y, color);
+			i = proj_y * _imageWater->bytes_per_line + proj_x * 4;
+			if ( i < 0)
+				continue ;
+			_dataWater[i] = b;
+			_dataWater[i + 1] = g;
+			_dataWater[i + 2] = r;
 		}
 	}
 	XPutImage(_dis, _win, gc, _imageWater, 0, 0, 200, 200, _width, _height);
 }
 
+
+/*
+**	Draw image foreground for button.
+*/
 void		GraphicalDisplay::setBackground(void)
 {
 	for (int x = 0; x < 200; x++)
@@ -172,6 +224,10 @@ void		GraphicalDisplay::setBackground(void)
 	}
 }
 
+
+/*
+**	Expose, redraw each button and the image.
+*/
 void		GraphicalDisplay::expose(GC gc)
 {
 	XPutImage(_dis, _win, gc, _imageWater, 0, 0, 200, 200, _width, _height);
@@ -198,6 +254,10 @@ void		GraphicalDisplay::expose(GC gc)
 	XFlush(_dis);
 }
 
+
+/*
+**	On click check position x | y for button event.
+*/
 bool		GraphicalDisplay::buttonEvent(GC gc, XEvent event)
 {
 	int		x = event.xbutton.x;
@@ -279,6 +339,7 @@ void		GraphicalDisplay::run(void)
 	this->setBackground();
 	this->draw(tab);
 	memcpy(_dataWater, _data, _height * _width * 4);
+
 	while (run)
 	{
 		while (XPending(_dis))
@@ -307,6 +368,7 @@ void		GraphicalDisplay::run(void)
 				_water->Waves(north, south, east, west);
 			if (rain)
 				_water->Rainy();
+			_water->Flow();
 			this->drawWater(gc, tab);
 		}
 	}
