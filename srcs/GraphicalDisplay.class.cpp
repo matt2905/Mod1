@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/15 15:48:23 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/17 21:51:25 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	_width = width;
 	_height = height;
 	_map = new Map(_width, _height);
+	_water = NULL;
 
 	_dis = XOpenDisplay(NULL);
 	screen = DefaultScreen(_dis);
@@ -65,7 +66,10 @@ GraphicalDisplay::~GraphicalDisplay(void)
 {
 	if (_map)
 		delete _map;
+	if (_water)
+		delete _water;
 	XDestroyImage(_image);
+	XDestroyImage(_imageWater);
 	XDestroyImage(_greyBG);
 	XDestroyImage(_whiteBG);
 	XCloseDisplay(_dis);
@@ -90,10 +94,29 @@ bool		GraphicalDisplay::setWater(void)
 	return (true);
 }
 
-/*
-**		Draw pixel per pixel
-**		TODO: degraded on color from 0.01 to 0.8 with brown
-*/
+float		GraphicalDisplay::getColor(float earth, float water, int *r, int *g, int *b)
+{
+	float	y;
+	float	color;
+
+	*r = 0;
+	*g = 0;
+	*b = 255;
+	if (!water)
+	{
+		color = earth * 255;
+		*r = (earth > 0.9 ? color : (earth > 0.01 ? 73 + color : 0));
+		*g = (earth > 0.9 ? color : (earth > 0.01 ? 49 + color : 255));
+		*b = (earth > 0.9 ? 255 : (earth > 0.01 ? 28 + color / 2 : 0));
+	}
+	*r = (*r > 255 ? 255 : *r);
+	*g = (*g > 255 ? 255 : *g);
+	*b = (*b > 255 ? 255 : *b);
+	y = (float)(water + earth) * -100.0f;
+
+	return (y);
+}
+
 void		GraphicalDisplay::draw(float **tab)
 {
 	int				r;
@@ -108,32 +131,10 @@ void		GraphicalDisplay::draw(float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = tab[x][y] * -100 + 0.25f * x + 0.25f * y + 200; 
+			proj_y = getColor(tab[x][y], 0, &r, &g, &b) + 0.25f * x + 0.25f * y + 200;
 			i = proj_y * _image->bytes_per_line + proj_x * 4;
-			if (tab[x][y] > 0.8)
-			{
-				r = tab[x][y] * 255;
-				g = tab[x][y] * 255;
-				b = 255;
-			}
-			else if (tab[x][y] > 0.01)
-			{
-				r = 73 + tab[x][y] * 255;
-				g = 49 + tab[x][y] * 255;
-				b = 28 + tab[x][y] * 255 / 2;
-			}
-			else
-			{
-				r = 0;
-				g = 255;
-				b = 0;
-			}
-			if (r > 255)
-				r = 255;
-			if (g > 255)
-				g = 255;
-			if (b > 255)
-				b = 255;
+			if (i < 0)
+				continue ;
 			_data[i] = b;
 			_data[i + 1] = g;
 			_data[i + 2] = r;
@@ -160,43 +161,7 @@ void		GraphicalDisplay::drawWater(GC gc, float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = 0.25f * x + 0.25 * y + 200;
-			if (map[x][y].height > 0)
-			{
-				proj_y += (map[x][y].height + tab[x][y])* -100;
-				r = 0;
-				g = 0;
-				b = 255;
-			}
-			else
-			{
-				proj_y += tab[x][y] * -100;
-				if (tab[x][y] > 0.8)
-				{
-					r = tab[x][y] * 255;
-					g = tab[x][y] * 255;
-					b = 255;
-				}
-				else if (tab[x][y] > 0.01)
-				{
-					r = 73 + tab[x][y] * 255;
-					g = 49 + tab[x][y] * 255;
-					b = 28 + tab[x][y] * 255 / 2;
-				}
-				else
-				{
-					r = 0;
-					g = 255;
-					b = 0;
-				}
-				if (r > 255)
-					r = 255;
-				if (g > 255)
-					g = 255;
-				if (b > 255)
-					b = 255;
-
-			}
+			proj_y = getColor(tab[x][y], map[x][y].height, &r, &g, &b) + 0.25f * x + 0.25 * y + 200;
 			i = proj_y * _imageWater->bytes_per_line + proj_x * 4;
 			if ( i < 0)
 				continue ;
@@ -349,17 +314,18 @@ void		GraphicalDisplay::run(void)
 				case Expose:
 					if (_report.xexpose.count == 0)
 						this->expose(gc);
-				break;
+					break;
 				case KeyPress:
 					if (XLookupKeysym(&_report.xkey, 0) == XK_q)
 						run = false;
-				break;
+					break;
 				case ButtonPress:
 					if (this->buttonEvent(gc, _report))
 						run = false;
-				break;
+					break;
 			}
 		}
+		_water->Flow();
 		if (rise || rain || south || east || north || west)
 		{
 			if (rise)
@@ -368,9 +334,8 @@ void		GraphicalDisplay::run(void)
 				_water->Waves(north, south, east, west);
 			if (rain)
 				_water->Rainy();
-			_water->Flow();
-			this->drawWater(gc, tab);
 		}
+		this->drawWater(gc, tab);
 	}
 	XFreeGC(_dis, gc);
 }

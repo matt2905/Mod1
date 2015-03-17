@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/16 19:08:24 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/17 21:17:17 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ class	GraphicalDisplay
 
 		GraphicalDisplay	&operator=(const GraphicalDisplay &);
 
+		float				getColor(float, float, int *, int *, int *);
 };
 
 #endif
