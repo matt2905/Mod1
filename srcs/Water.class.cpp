@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/15 18:48:53 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/17 15:51:25 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void Water::Rainy( void ) {
 	float rainy = 0.01;
 
 	//	Give density (lowest is the number, higher is the density)
-	unsigned int density = 100;
+	unsigned int density = 1000;
 	unsigned int precipitate = (_sizeX * _sizeY) / density;
 	unsigned int x;
 	unsigned int y;
@@ -237,7 +237,7 @@ void Water::Flow( void ) {
 //		Compare height's difference, influent speed
 void Water::Drop( void ) {
 	double PI = std::atan(1.0);
-	float drop = 0.01;
+	float drop = 0.002;
 	float speed;
 	float hgt;
 	float dir;
@@ -253,9 +253,9 @@ void Water::Drop( void ) {
 /*				if ( x + 1 < _sizeX && y > 0
 						&& speed < hgt - _CurMap[x+1][y-1].height - _Map[x+1][y-1] ) {
 					speed = hgt - _CurMap[x+1][y-1].height - _Map[x+1][y-1];
-					dir = 0;
-				}
-*/				if ( x + 1 < _sizeX
+					dir = 8 * PI;
+				}*/
+				if ( x + 1 < _sizeX
 						&& speed < hgt - _CurMap[x+1][y].height - _Map[x+1][y] ) {
 					speed = hgt - _CurMap[x+1][y].height - _Map[x+1][y];
 					dir = 7 * PI;
@@ -264,8 +264,8 @@ void Water::Drop( void ) {
 						&& speed < hgt - _CurMap[x+1][y+1].height - _Map[x+1][y+1] ) {
 					speed = hgt - _CurMap[x+1][y].height - _Map[x+1][y];
 					dir = 2*PI;
-				}
-*/				if ( y + 1 < _sizeY
+				}*/
+				if ( y + 1 < _sizeY
 						&& speed < hgt - _CurMap[x][y+1].height - _Map[x][y+1] ) {
 					speed = hgt - _CurMap[x][y+1].height - _Map[x][y+1];
 					dir = 5 * PI;
@@ -274,8 +274,8 @@ void Water::Drop( void ) {
 						&& speed < hgt - _CurMap[x-1][y+1].height - _Map[x-1][y+1] ) {
 					speed = hgt - _CurMap[x-1][y+1].height - _Map[x-1][y+1];
 					dir = 4*PI;
-				}
-*/				if ( x > 0 && speed < hgt - _CurMap[x-1][y].height - _Map[x-1][y] ) {
+				}*/
+				if ( x > 0 && speed < hgt - _CurMap[x-1][y].height - _Map[x-1][y] ) {
 					speed = hgt - _CurMap[x-1][y].height - _Map[x-1][y];
 					dir = 3 * PI;
 				}
@@ -283,14 +283,16 @@ void Water::Drop( void ) {
 						&& speed < hgt - _CurMap[x-1][y-1].height - _Map[x-1][y-1] ) {
 					speed = hgt - _CurMap[x-1][y-1].height - _Map[x-1][y-1];
 					dir = 6*PI;
-				}
-*/				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height - _Map[x][y-1] ) {
+				}*/
+				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height - _Map[x][y-1] ) {
 					speed = hgt - _CurMap[x][y-1].height - _Map[x][y-1];
 					dir = PI;
 				}	
 
 				if ( speed > drop )
+//				{printf("loli POWER ! speed = %f\n", speed);
 					DropNew(x, y, dir, speed);
+//				}
 //				printf("loli POWER !\nmax x = %d, max y = %d\n\n", _sizeX, _sizeY);
 //				printf("loli x=%d y=%d speed=%f\n", x, y, speed);
 			}
@@ -300,10 +302,10 @@ void Water::Drop( void ) {
 
 //		Drop modification
 void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
-//	float gravity = 1;
+	float gravity = 1;
 	float way = _CurMap[x][y].dir;
 
-//	speed = speed * gravity;
+	speed = speed * gravity;
 	//	new way value ((x / (x + y)) + (y / (x + y))
 	NewDir(x, y, dir, speed);
 	
@@ -391,8 +393,8 @@ void Water::Speed( void ) {
 
 			}
 		}
-	}/*
-	printf("quantite = %f\n", tmp);
+	}
+/*	printf("quantite = %f\n", tmp);
 	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			tmp -= _CurMap[x][y].height;
@@ -404,20 +406,19 @@ void Water::Speed( void ) {
 //		Speed modification
 float Water::Transfert( unsigned int x1, unsigned int y1,
 		unsigned int x2, unsigned int y2, float drop ) {
-	float slow = 0.6;
+	float slow = 0.3;
 	float way = _CurMap[x2][y2].dir;
-	float transfert = 0.3;
+	float transfert = 0.5;
 
 	//	Transfert of Water
-	drop = _CurMap[x1][y1].height;
+	if ( drop * transfert > _CurMap[x1][y1].height )
+		drop = _CurMap[x1][y1].height / transfert;
 	if ( (_CurMap[x2][y2].height + _Map[x2][y2] + (drop * transfert)) > 1 )
 		drop = (1 - (_CurMap[x2][y2].height + _Map[x2][y2])) * (1 / transfert);
 	_CurMap[x1][y1].height = _CurMap[x1][y1].height - (drop * transfert);
 	_CurMap[x2][y2].height = _CurMap[x2][y2].height + (drop * transfert);
 /*	if ( _CurMap[x2][y2].height + _Map[x2][y2] > 1 ) {
-		tmp = _CurMap[x2][y2].height + _Map[x2][y2] - 1;
-		_CurMap[x2][y2].height -= tmp;
-		_CurMap[x1][y1].height += tmp;
+		_CurMap[x2][y2].height = 1 - _Map[x2][y2];
 	}*/
 
 	//	Transfert of Power
@@ -488,7 +489,7 @@ void Water::NewDir(unsigned int x, unsigned int y, float dir, float speed) {
 //ª;
 void Water::NewSpd(unsigned int x, unsigned int y, float dir, float spd, float odir) {
 	double PI = std::atan(1.0)*4;
-	float slow = 0.6;
+	float slow = 0.3;
 	float rlow = 0.001;
 	float tmp;
 
