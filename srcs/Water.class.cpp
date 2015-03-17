@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/17 15:51:25 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/17 21:32:57 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,11 +237,12 @@ void Water::Flow( void ) {
 //		Compare height's difference, influent speed
 void Water::Drop( void ) {
 	double PI = std::atan(1.0);
-	float drop = 0.002;
+	float drop = 0.001;
 	float speed;
 	float hgt;
 	float dir;
 
+	srand (time(NULL));
 	for ( unsigned int x = 0; x < _sizeX; x++ ) {
 		for ( unsigned int y = 0; y < _sizeY; y++ ) {
 			if ( _CurMap[x][y].height > drop ) {
@@ -287,7 +288,7 @@ void Water::Drop( void ) {
 				if ( y > 0 && speed < hgt - _CurMap[x][y-1].height - _Map[x][y-1] ) {
 					speed = hgt - _CurMap[x][y-1].height - _Map[x][y-1];
 					dir = PI;
-				}	
+				}
 
 				if ( speed > drop )
 //				{printf("loli POWER ! speed = %f\n", speed);
@@ -302,7 +303,7 @@ void Water::Drop( void ) {
 
 //		Drop modification
 void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
-	float gravity = 1;
+	float gravity = 3;
 	float way = _CurMap[x][y].dir;
 
 	speed = speed * gravity;
@@ -320,7 +321,7 @@ void Water::DropNew( unsigned int x, unsigned int y, float dir, float speed ) {
 //		Applicate speed
 void Water::Speed( void ) {
 	double PI = std::atan(1.0)*4;
-	float lim = 0.001;
+	float lim = 0.003;
 	float drop;
 /*	float tmp = 0;
 
@@ -406,7 +407,7 @@ void Water::Speed( void ) {
 //		Speed modification
 float Water::Transfert( unsigned int x1, unsigned int y1,
 		unsigned int x2, unsigned int y2, float drop ) {
-	float slow = 0.3;
+	float slow = 1 / 3;
 	float way = _CurMap[x2][y2].dir;
 	float transfert = 0.5;
 
@@ -489,8 +490,8 @@ void Water::NewDir(unsigned int x, unsigned int y, float dir, float speed) {
 //ª;
 void Water::NewSpd(unsigned int x, unsigned int y, float dir, float spd, float odir) {
 	double PI = std::atan(1.0)*4;
-	float slow = 0.3;
-	float rlow = 0.001;
+	float slow = 1 / 3;
+	float rlow = 0.03;
 	float tmp;
 
 
