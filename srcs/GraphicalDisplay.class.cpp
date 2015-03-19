@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/17 21:51:25 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/19 14:02:11 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,18 +96,33 @@ bool		GraphicalDisplay::setWater(void)
 
 float		GraphicalDisplay::getColor(float earth, float water, int *r, int *g, int *b)
 {
-	float	y;
-	float	color;
+	float			y;
+	float			color;
+	static t_color	blue[11] =
+	{
+		{36,185,228},
+		{33,174,219},
+		{31,164,211},
+		{28,153,202},
+		{26,142,194},
+		{24,131,185},
+		{21,120,177},
+		{19,109,168},
+		{16,99,160},
+		{14,88,151},
+		{11,77,143}
+	};
+	int				i = water * 10;
 
-	*r = 0;
-	*g = 0;
-	*b = 255;
+	*r = blue[i].r;
+	*g = blue[i].g;
+	*b = blue[i].b;
 	if (!water)
 	{
 		color = earth * 255;
-		*r = (earth > 0.9 ? color : (earth > 0.01 ? 73 + color : 0));
-		*g = (earth > 0.9 ? color : (earth > 0.01 ? 49 + color : 255));
-		*b = (earth > 0.9 ? 255 : (earth > 0.01 ? 28 + color / 2 : 0));
+		*r = (earth > 0.9 ? color : (earth > 0.01 ? 100 + color : 0));
+		*g = (earth > 0.9 ? color : (earth > 0.01 ? 60 + color : 255));
+		*b = (earth > 0.9 ? 255 : (earth > 0.01 ? 20 + color / 2 : 0));
 	}
 	*r = (*r > 255 ? 255 : *r);
 	*g = (*g > 255 ? 255 : *g);
@@ -161,7 +176,7 @@ void		GraphicalDisplay::drawWater(GC gc, float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = getColor(tab[x][y], map[x][y].height, &r, &g, &b) + 0.25f * x + 0.25 * y + 200;
+			proj_y = getColor(tab[x][y], map[x][y].height, &r, &g, &b) + 0.25f * x + 0.25f * y + 200;
 			i = proj_y * _imageWater->bytes_per_line + proj_x * 4;
 			if ( i < 0)
 				continue ;

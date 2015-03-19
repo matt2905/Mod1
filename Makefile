@@ -6,11 +6,11 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/02/16 14:23:49 by tbalea           ###   ########.fr        #
+#    Updated: 2015/03/19 13:25:48 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CFLAGS		=	-Wall -Wextra -Werror -g
+CFLAGS		=	-Wall -Wextra -Werror -O4
 
 CC			=	g++
 

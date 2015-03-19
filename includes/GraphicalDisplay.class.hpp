@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/17 21:17:17 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/19 13:38:13 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,12 @@ class	GraphicalDisplay
 
 		float				getColor(float, float, int *, int *, int *);
 };
+
+typedef struct			s_color
+{
+	unsigned char		r;
+	unsigned char		g;
+	unsigned char		b;
+}						t_color;
 
 #endif
