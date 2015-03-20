@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/16 14:30:43 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/19 20:16:53 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ void	ft_parse(char *argv, std::list<t_map> *map)
 int		main(int argc, char **argv)
 {
 	std::list<t_map>	mapHill;
+	bool				run = true;
+	float				**tab;
 
 	if (argc != 2)
 	{
@@ -71,16 +73,24 @@ int		main(int argc, char **argv)
 		return (1);
 	}
 	ft_parse(argv[1], &mapHill);
-
-	std::list<t_map>::iterator			it;
-	std::list<t_map>::const_iterator	ite = mapHill.end();
+	if (mapHill.empty())
+		return (1);
 
 	GraphicalDisplay		gd(1000, 1000);
 
 	gd.setMap(mapHill);
 	gd.setWater();
 
-	gd.run();
+	tab = gd.getMap()->getMap();
+	gd.setBackground();
+	gd.draw(tab);
+
+	while (run)
+	{
+		run = gd.run();
+		gd.getWater()->Flow();
+		gd.drawWater(tab);
+	}
 
 	return (0);
 }

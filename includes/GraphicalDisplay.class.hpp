@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/19 13:38:13 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/19 20:13:32 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,25 +25,30 @@ class	GraphicalDisplay
 		GraphicalDisplay(unsigned int, unsigned int);
 		~GraphicalDisplay(void);
 
+		Map					*getMap(void) const;
+		Water				*getWater(void) const;
+
 		bool				setMap(std::list<t_map> &);
 		bool				setWater(void);
-
-		void				run(void);
-		void				draw(float **);
-		void				drawWater(GC, float **);
 		void				setBackground(void);
 
-		void				expose(GC gc);
-		bool				buttonEvent(GC, XEvent);
+		bool				run();
+		void				draw(float **);
+		void				drawWater(float **);
+
+		void				expose(void);
+		bool				buttonEvent(XEvent);
 
 	private:
 		unsigned int	_width;
 		unsigned int	_height;
-		Map				*_map;
-		Water			*_water;
 		Display			*_dis;
 		Window			_win;
 		XEvent			_report;
+		Map				*_map;
+		Water			*_water;
+		GC				_gc;
+
 		XImage			*_image;
 		char			*_data;
 		XImage			*_imageWater;
