@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/19 20:16:53 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/20 13:05:10 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,28 @@ void	ft_parse(char *argv, std::list<t_map> *map)
 	}
 }
 
+void	ft_run(std::list<t_map> &mapHill)
+{
+	GraphicalDisplay	gd(1000, 1000);
+	float				**tab;
+	bool				run = true;
+
+	gd.setMap(mapHill);
+	gd.setWater();
+	tab = gd.getMap()->getMap();
+	gd.setBackground();
+	gd.draw(tab);
+	while (run)
+	{
+		run = gd.run();
+		gd.getWater()->Flow();
+		gd.drawWater(tab);
+	}
+}
+
 int		main(int argc, char **argv)
 {
 	std::list<t_map>	mapHill;
-	bool				run = true;
-	float				**tab;
 
 	if (argc != 2)
 	{
@@ -74,23 +91,10 @@ int		main(int argc, char **argv)
 	}
 	ft_parse(argv[1], &mapHill);
 	if (mapHill.empty())
-		return (1);
-
-	GraphicalDisplay		gd(1000, 1000);
-
-	gd.setMap(mapHill);
-	gd.setWater();
-
-	tab = gd.getMap()->getMap();
-	gd.setBackground();
-	gd.draw(tab);
-
-	while (run)
 	{
-		run = gd.run();
-		gd.getWater()->Flow();
-		gd.drawWater(tab);
+		std::cout << "Empty file or open failed" << std::endl;
+		return (1);
 	}
-
+	ft_run(mapHill);
 	return (0);
 }

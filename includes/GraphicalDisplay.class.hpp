@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/19 20:13:32 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/20 12:59:48 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,6 @@ class	GraphicalDisplay
 		bool				run();
 		void				draw(float **);
 		void				drawWater(float **);
-
-		void				expose(void);
-		bool				buttonEvent(XEvent);
 
 	private:
 		unsigned int	_width;
@@ -72,6 +69,10 @@ class	GraphicalDisplay
 		GraphicalDisplay	&operator=(const GraphicalDisplay &);
 
 		float				getColor(float, float, int *, int *, int *);
+
+		void				expose(void);
+		bool				buttonEvent(XEvent);
+
 };
 
 typedef struct			s_color

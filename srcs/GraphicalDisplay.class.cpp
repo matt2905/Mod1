@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/20 10:54:08 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/20 13:44:42 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,13 +167,15 @@ void		GraphicalDisplay::draw(float **tab)
 		{
 			height = getColor(tab[x][y], 0, &r, &g, &b);
 			i = (int)(proj_y + height) * _imageWater->bytes_per_line + (int)proj_x * 4;
+			proj_x -= 0.5f;
+			proj_y += 0.25f;
 			if (i < 0)
 				continue ;
+			if (proj_x == 500 && proj_y == 200)
+				b = g = r = 255;
 			_data[i] = b;
 			_data[i + 1] = g;
 			_data[i + 2] = r;
-			proj_x -= 0.5f;
-			proj_y += 0.25f;
 		}
 		tmp_x += 0.5f;
 		tmp_y += 0.25f;
@@ -197,7 +199,6 @@ void		GraphicalDisplay::drawWater(float **tab)
 	float		height;
 	int			i;
 
-
 	map = _water->getCurMap();
 	for (size_t x = 0; x < _width; x++)
 	{
@@ -207,13 +208,23 @@ void		GraphicalDisplay::drawWater(float **tab)
 		{
 			height = getColor(tab[x][y], map[x][y].height, &r, &g, &b);
 			i = (int)(proj_y + height) * _imageWater->bytes_per_line + (int)proj_x * 4;
-			if ( i < 0)
+			proj_x -= 0.5f;
+			proj_y += 0.25f;
+			if (i < 0)
 				continue ;
 			_dataWater[i] = b;
 			_dataWater[i + 1] = g;
 			_dataWater[i + 2] = r;
-			proj_x -= 0.5f;
-			proj_y += 0.25f;
+			if (x == 0 || y == 0)
+			{
+				for (float water = map[x][y].height + tab[x][y]; water <= 1; water += 0.01)
+				{
+					i = (int)(proj_y + (water * -100)) * _imageWater->bytes_per_line + (int)proj_x * 4;
+					_dataWater[i] = 0;
+					_dataWater[i + 1] = 0;
+					_dataWater[i + 2] = 0;
+				}
+			}
 		}
 		tmp_x += 0.5f;
 		tmp_y += 0.25f;
@@ -369,16 +380,15 @@ bool		GraphicalDisplay::run(void)
 				break;
 		}
 	}
-	if (rise || rain || south || east || north || west || evaporate)
-	{
-		if (rise)
-			_water->Flood();
-		if (south || east ||  north || west)
-			_water->Waves(north, south, east, west);
-		if (rain)
-			_water->Rainy();
-		if (evaporate)
-			_water->Evapor();
-	}
+
+	if (rise)
+		_water->Flood();
+	if (south || east || north || west)
+		_water->Waves(north, south, east, west);
+	if (rain)
+		_water->Rainy();
+	if (evaporate)
+		_water->Evapor();
+
 	return (true);
 }
