@@ -6,13 +6,10 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/21 16:21:30 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/21 16:37:09 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <X11/keysym.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/select.h>
@@ -23,36 +20,36 @@
 */
 GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 {
-	XSetWindowAttributes	attributes;
-	Visual					*visual;
-	int						screen;
-	int						depth;
+//	XSetWindowAttributes	attributes;
+//	Visual					*visual;
+//	int						screen;
+//	int						depth;
 
 	_width = width;
 	_height = height;
 	_map = new Map(_width, _height);
 	_water = NULL;
 
-	_dis = XOpenDisplay(NULL);
-	screen = DefaultScreen(_dis);
-	visual = DefaultVisual(_dis, screen);
-	depth = DefaultDepth(_dis, screen);
-	attributes.background_pixel = XBlackPixel(_dis, screen);
+//	_dis = XOpenDisplay(NULL);
+//	screen = DefaultScreen(_dis);
+//	visual = DefaultVisual(_dis, screen);
+//	depth = DefaultDepth(_dis, screen);
+//	attributes.background_pixel = XBlackPixel(_dis, screen);
 
-	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, 1500, 900, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
-	XMapWindow(_dis, _win);
-	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
-	_gc = XCreateGC(_dis, _win, 0, 0);
+//	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, 1500, 900, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
+//	XMapWindow(_dis, _win);
+//	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
+//	_gc = XCreateGC(_dis, _win, 0, 0);
 
-	_data = new char[_width * _height * 4];
-	_image = XCreateImage(_dis, visual, depth, ZPixmap, 0, _data, _width, _height, 32, 0);
-	_dataWater = new char[_width * _height * 4];
-	_imageWater = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataWater, _width, _height, 32, 0);
+//	_data = new char[_width * _height * 4];
+//	_image = XCreateImage(_dis, visual, depth, ZPixmap, 0, _data, _width, _height, 32, 0);
+//	_dataWater = new char[_width * _height * 4];
+//	_imageWater = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataWater, _width, _height, 32, 0);
 
-	_dataGrey = new char[200 * 25 * 4];
-	_greyBG = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataGrey, 200, 25, 32, 0);
-	_dataWhite = new char[200 * 25 * 4];
-	_whiteBG = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataWhite, 200, 25, 32, 0);
+//	_dataGrey = new char[200 * 25 * 4];
+//	_greyBG = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataGrey, 200, 25, 32, 0);
+//	_dataWhite = new char[200 * 25 * 4];
+//	_whiteBG = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataWhite, 200, 25, 32, 0);
 
 	rise = false;
 	rain = false;
@@ -69,12 +66,12 @@ GraphicalDisplay::~GraphicalDisplay(void)
 		delete _map;
 	if (_water)
 		delete _water;
-	XFreeGC(_dis, _gc);
-	XDestroyImage(_image);
-	XDestroyImage(_imageWater);
-	XDestroyImage(_greyBG);
-	XDestroyImage(_whiteBG);
-	XCloseDisplay(_dis);
+//	XFreeGC(_dis, _gc);
+//	XDestroyImage(_image);
+//	XDestroyImage(_imageWater);
+//	XDestroyImage(_greyBG);
+//	XDestroyImage(_whiteBG);
+//	XCloseDisplay(_dis);
 }
 
 /*
@@ -157,7 +154,7 @@ void		GraphicalDisplay::draw(float **tab)
 	float		tmp_x = 500;
 	float		tmp_y = 200;
 	float		height;
-	int			i;
+//	int			i;
 
 	for (size_t x = 0; x < _width; x++)
 	{
@@ -166,19 +163,19 @@ void		GraphicalDisplay::draw(float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			height = getColor(tab[x][y], 0, &r, &g, &b);
-			i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
-			_data[i] = b;
-			_data[i + 1] = g;
-			_data[i + 2] = r;
+//			i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
+//			_data[i] = b;
+//			_data[i + 1] = g;
+//			_data[i + 2] = r;
 			if (x == _width - 1)
 			{
 				for (float earth = 0.02; earth < tab[x][y]; earth += 0.01)
 				{
 					height = getColor(earth, 0, &r, &g, &b);
-					i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
-					_data[i] = b;
-					_data[i + 1] = g;
-					_data[i + 2] = r;
+//					i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
+//					_data[i] = b;
+//					_data[i + 1] = g;
+//					_data[i + 2] = r;
 				}
 			}
 			proj_x -= 0.5f;
@@ -187,15 +184,15 @@ void		GraphicalDisplay::draw(float **tab)
 		for (float earth = 0.02; earth < tab[x][_height - 1]; earth += 0.01)
 		{
 			height = getColor(earth, 0, &r, &g, &b);
-			i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
-			_data[i] = b;
-			_data[i + 1] = g;
-			_data[i + 2] = r;
+//			i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
+//			_data[i] = b;
+//			_data[i + 1] = g;
+//			_data[i + 2] = r;
 		}
 		tmp_x += 0.5f;
 		tmp_y += 0.25f;
 	}
-	memcpy(_dataWater, _data, _height * _width * 4);
+//	memcpy(_dataWater, _data, _height * _width * 4);
 }
 
 /*
@@ -212,7 +209,7 @@ void		GraphicalDisplay::drawWater(float **tab)
 	float		tmp_x = 500;
 	float		tmp_y = 200;
 	float		height;
-	int			i;
+//	int			i;
 
 	map = _water->getCurMap();
 	for (size_t x = 0; x < _width; x++)
@@ -222,18 +219,18 @@ void		GraphicalDisplay::drawWater(float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			height = getColor(tab[x][y], map[x][y].height, &r, &g, &b);
-			i = (int)(proj_y + height) * _imageWater->bytes_per_line + (int)proj_x * 4;
-			_dataWater[i] = b;
-			_dataWater[i + 1] = g;
-			_dataWater[i + 2] = r;
+//			i = (int)(proj_y + height) * _imageWater->bytes_per_line + (int)proj_x * 4;
+//			_dataWater[i] = b;
+//			_dataWater[i + 1] = g;
+//			_dataWater[i + 2] = r;
 			if (x == 0 || y == 0 )
 			{
 				for (float water = map[x][y].height + tab[x][y]; water < 1; water += 0.01)
 				{
-					i = (int)(proj_y + (water * -100)) * _imageWater->bytes_per_line + (int)proj_x * 4;
-					_dataWater[i] = 0;
-					_dataWater[i + 1] = 0;
-					_dataWater[i + 2] = 0;
+//					i = (int)(proj_y + (water * -100)) * _imageWater->bytes_per_line + (int)proj_x * 4;
+//					_dataWater[i] = 0;
+//					_dataWater[i + 1] = 0;
+//					_dataWater[i + 2] = 0;
 				}
 			}
 			proj_x -= 0.5f;
@@ -242,7 +239,7 @@ void		GraphicalDisplay::drawWater(float **tab)
 		tmp_x += 0.5f;
 		tmp_y += 0.25f;
 	}
-	XPutImage(_dis, _win, _gc, _imageWater, 0, 0, 200, 200, _width, _height);
+//	XPutImage(_dis, _win, _gc, _imageWater, 0, 0, 200, 200, _width, _height);
 }
 
 
@@ -251,19 +248,19 @@ void		GraphicalDisplay::drawWater(float **tab)
 */
 void		GraphicalDisplay::setBackground(void)
 {
-	int		i;
+//	int		i;
 
 	for (int x = 0; x < 200; x++)
 	{
 		for (int y = 0; y < 25; y++)
 		{
-			i = y * _greyBG->bytes_per_line + x * 4;
-			_dataGrey[i] = (!y || !x ? 0 : 0xD3);
-			_dataGrey[i + 1] = (!y || !x ? 0 : 0xD3);
-			_dataGrey[i + 2] = (!y || !x ? 0 : 0xD3);
-			_dataWhite[i] = (!y || !x ? 0 : 0xFF);
-			_dataWhite[i + 1] = (!y || !x ? 0 : 0xFF);
-			_dataWhite[i + 2] = (!y || !x ? 0 : 0xFF);
+//			i = y * _greyBG->bytes_per_line + x * 4;
+//			_dataGrey[i] = (!y || !x ? 0 : 0xD3);
+//			_dataGrey[i + 1] = (!y || !x ? 0 : 0xD3);
+//			_dataGrey[i + 2] = (!y || !x ? 0 : 0xD3);
+//			_dataWhite[i] = (!y || !x ? 0 : 0xFF);
+//			_dataWhite[i + 1] = (!y || !x ? 0 : 0xFF);
+//			_dataWhite[i + 2] = (!y || !x ? 0 : 0xFF);
 		}
 	}
 }
@@ -274,7 +271,7 @@ void		GraphicalDisplay::setBackground(void)
 */
 void		GraphicalDisplay::expose(void)
 {
-	XPutImage(_dis, _win, _gc, _imageWater, 0, 0, 200, 200, _width, _height);
+/*	XPutImage(_dis, _win, _gc, _imageWater, 0, 0, 200, 200, _width, _height);
 	XPutImage(_dis, _win, _gc, (rise ? _whiteBG : _greyBG), 0, 0, 0, 0, 200, 25);
 	XDrawString(_dis, _win, _gc, 50, 15, "Rise water", 10);
 	XPutImage(_dis, _win, _gc, (rain ? _whiteBG : _greyBG), 0, 0, 200, 0, 200, 25);
@@ -296,12 +293,13 @@ void		GraphicalDisplay::expose(void)
 	XPutImage(_dis, _win, _gc, _greyBG, 0, 0, 800, 0, 200, 25);
 	XDrawString(_dis, _win, _gc, 850, 15, "Exit", 4);
 	XFlush(_dis);
-}
+*/}
 
 
 /*
 **	On click check position x | y for button event.
 */
+/*
 bool		GraphicalDisplay::buttonEvent(XEvent event)
 {
 	int		x = event.xbutton.x;
@@ -369,13 +367,13 @@ bool		GraphicalDisplay::buttonEvent(XEvent event)
 	}
 	return (false);
 }
-
+*/
 /*
 **		Run XQuartz in infinity loop for catch event
 */
 bool		GraphicalDisplay::run(void)
 {
-	while (XPending(_dis))
+/*	while (XPending(_dis))
 	{
 		XNextEvent(_dis, &_report);
 		switch (_report.type) {
@@ -394,7 +392,7 @@ bool		GraphicalDisplay::run(void)
 		}
 	}
 
-	if (rise)
+*/	if (rise)
 		_water->Flood();
 	if (south || east || north || west)
 		_water->Waves(north, south, east, west);

@@ -6,7 +6,7 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/03/21 16:21:09 by mmartin          ###   ########.fr        #
+#    Updated: 2015/03/21 16:37:22 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,6 @@ INC			=	-I includes
 DOBJ		=	obj/
 
 NAME		=	mod1
-
-LIB			=	-L /usr/X11/lib -lX11
 
 SRC			=	srcs/main.cpp					\
 				srcs/GraphicalDisplay.class.cpp	\
@@ -37,7 +35,7 @@ all:		$(NAME)
 
 $(NAME):	$(OBJ)
 	@echo "\033[32m$(CC) \033[33m$(CFLAGS) \033[36m-c $< -o $@ $(LIB)\033[0m"
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
 	@echo "\033[33m"Compilation of $(NAME) : "\033[32m"Success"\033[0m"
 
 -include		$(OBJ:.o=.d)
