@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/20 13:05:10 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/21 17:27:14 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,17 @@ void	ft_run(std::list<t_map> &mapHill)
 int		main(int argc, char **argv)
 {
 	std::list<t_map>	mapHill;
+	char				*ext;
 
 	if (argc != 2)
 	{
-		std::cout << "Usage: " << argv[0] << " file" << std::endl;
+		std::cout << "Usage: " << argv[0] << " file.mod1" << std::endl;
+		return (1);
+	}
+	ext = strrchr(argv[1], '.');
+	if (!ext || strcmp(ext, ".mod1"))
+	{
+		std::cout << "Usage: " << argv[0] << " file.mod1" << std::endl;
 		return (1);
 	}
 	ft_parse(argv[1], &mapHill);
