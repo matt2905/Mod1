@@ -6,21 +6,21 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/03/20 10:50:57 by mmartin          ###   ########.fr        #
+#    Updated: 2015/03/21 16:21:09 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CFLAGS		=	-Wall -Wextra -Werror -O4
+CFLAGS		=	-Wall -Wextra -Werror -O3
 
 CC			=	g++
 
-INC			=	-I includes -I /usr/X11R6/include
+INC			=	-I includes
 
 DOBJ		=	obj/
 
 NAME		=	mod1
 
-LIB			=	-L /usr/X11R6/lib -lX11
+LIB			=	-L /usr/X11/lib -lX11
 
 SRC			=	srcs/main.cpp					\
 				srcs/GraphicalDisplay.class.cpp	\

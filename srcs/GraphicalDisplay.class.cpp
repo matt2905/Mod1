@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/20 13:44:42 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/21 16:21:30 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,13 +166,28 @@ void		GraphicalDisplay::draw(float **tab)
 		for (size_t y = 0; y < _height; y++)
 		{
 			height = getColor(tab[x][y], 0, &r, &g, &b);
-			i = (int)(proj_y + height) * _imageWater->bytes_per_line + (int)proj_x * 4;
+			i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
+			_data[i] = b;
+			_data[i + 1] = g;
+			_data[i + 2] = r;
+			if (x == _width - 1)
+			{
+				for (float earth = 0.02; earth < tab[x][y]; earth += 0.01)
+				{
+					height = getColor(earth, 0, &r, &g, &b);
+					i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
+					_data[i] = b;
+					_data[i + 1] = g;
+					_data[i + 2] = r;
+				}
+			}
 			proj_x -= 0.5f;
 			proj_y += 0.25f;
-			if (i < 0)
-				continue ;
-			if (proj_x == 500 && proj_y == 200)
-				b = g = r = 255;
+		}
+		for (float earth = 0.02; earth < tab[x][_height - 1]; earth += 0.01)
+		{
+			height = getColor(earth, 0, &r, &g, &b);
+			i = (int)(proj_y + height) * _image->bytes_per_line + (int)proj_x * 4;
 			_data[i] = b;
 			_data[i + 1] = g;
 			_data[i + 2] = r;
@@ -204,20 +219,16 @@ void		GraphicalDisplay::drawWater(float **tab)
 	{
 		proj_x = tmp_x;
 		proj_y = tmp_y;
-		for (size_t y = 0; y <= _height; y++)
+		for (size_t y = 0; y < _height; y++)
 		{
 			height = getColor(tab[x][y], map[x][y].height, &r, &g, &b);
 			i = (int)(proj_y + height) * _imageWater->bytes_per_line + (int)proj_x * 4;
-			proj_x -= 0.5f;
-			proj_y += 0.25f;
-			if (i < 0)
-				continue ;
 			_dataWater[i] = b;
 			_dataWater[i + 1] = g;
 			_dataWater[i + 2] = r;
-			if (x == 0 || y == 0)
+			if (x == 0 || y == 0 )
 			{
-				for (float water = map[x][y].height + tab[x][y]; water <= 1; water += 0.01)
+				for (float water = map[x][y].height + tab[x][y]; water < 1; water += 0.01)
 				{
 					i = (int)(proj_y + (water * -100)) * _imageWater->bytes_per_line + (int)proj_x * 4;
 					_dataWater[i] = 0;
@@ -225,6 +236,8 @@ void		GraphicalDisplay::drawWater(float **tab)
 					_dataWater[i + 2] = 0;
 				}
 			}
+			proj_x -= 0.5f;
+			proj_y += 0.25f;
 		}
 		tmp_x += 0.5f;
 		tmp_y += 0.25f;
