@@ -6,7 +6,7 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/03/21 16:37:22 by mmartin          ###   ########.fr        #
+#    Updated: 2015/03/23 12:47:28 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,9 @@ CFLAGS		=	-Wall -Wextra -Werror -O3
 
 CC			=	g++
 
-INC			=	-I includes
+INC			=	-I includes -I $(HOME)/.brew/include
+
+LIB			=	-L ~/.brew/lib -lglfw3 -framework OpenGL
 
 DOBJ		=	obj/
 
@@ -35,7 +37,7 @@ all:		$(NAME)
 
 $(NAME):	$(OBJ)
 	@echo "\033[32m$(CC) \033[33m$(CFLAGS) \033[36m-c $< -o $@ $(LIB)\033[0m"
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB)
 	@echo "\033[33m"Compilation of $(NAME) : "\033[32m"Success"\033[0m"
 
 -include		$(OBJ:.o=.d)
