@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/20 13:50:32 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/23 19:51:37 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ class Water {
 //		void Moving(void);
 
 		//	Wave functions
-		float WavesMin(bool n, bool s, bool e, bool w);
+		float WavesMin(bool n, bool s, bool e, bool w, float wave);
 
 		//Attribute
 		//	Map Data
