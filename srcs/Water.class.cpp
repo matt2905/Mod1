@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/23 19:51:21 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/23 20:06:58 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -523,8 +523,8 @@ float Water::WavesMin(bool n, bool s, bool e, bool w, float wave)
 		{
 			if (_CurMap[x][0].height + _Map[x][0] < zmin)
 				zmin = _CurMap[x][0].height + _Map[x][0];
-			if (_CurMap[x][5].height == _CurMap[x][0].height
-					&& _CurMap[x][5].heigt >= _CurMap[x][0] - wave)
+			if (_CurMap[x][50].height == _CurMap[x][0].height
+					&& _CurMap[x][50].height >= _CurMap[x][0].height - wave)
 				zmin = zmin + wave;
 		}
 	}
@@ -534,9 +534,9 @@ float Water::WavesMin(bool n, bool s, bool e, bool w, float wave)
 		{
 			if (_CurMap[x][_sizeY - 1].height + _Map[x][_sizeY - 1] < zmin)
 				zmin = _CurMap[x][_sizeY - 1].height + _Map[x][_sizeY - 1];
-			if (_CurMap[x][_sizeY - 6].height == _CurMap[x][_sizeY - 1].height
-					&& _CurMap[x][_sizeY - 6].heigt
-					>= _CurMap[x][_sizeY - 1] - wave)
+			if (_CurMap[x][_sizeY - 51].height == _CurMap[x][_sizeY - 1].height
+					&& _CurMap[x][_sizeY - 51].height
+					>= _CurMap[x][_sizeY - 1].height - wave)
 				zmin = zmin + wave;
 		}
 	}
@@ -546,8 +546,8 @@ float Water::WavesMin(bool n, bool s, bool e, bool w, float wave)
 		{
 			if (_CurMap[0][y].height + _Map[0][y] < zmin)
 				zmin = _CurMap[0][y].height + _Map[0][y];
-			if (_CurMap[5][y].height == _CurMap[0][y].height
-					&& _CurMap[5][y].height >= _CurMap[0][y].height - wave)
+			if (_CurMap[50][y].height == _CurMap[0][y].height
+					&& _CurMap[50][y].height >= _CurMap[0][y].height - wave)
 				zmin = zmin + wave;
 		}
 	}
@@ -557,9 +557,9 @@ float Water::WavesMin(bool n, bool s, bool e, bool w, float wave)
 		{
 			if (_CurMap[_sizeX - 1][y].height + _Map[_sizeX - 1][y] < zmin)
 				zmin = _CurMap[_sizeX - 1][y].height + _Map[_sizeX - 1][y];
-			if (_CurMap[_sizeX - 6][y].height == _CurMap[_sizeX - 1][y].height
-					&& _CurMap[_sizeX - 6][5].height
-					>= _CurMap[_sizeX - 1][0].height - wave)
+			if (_CurMap[_sizeX - 51][y].height == _CurMap[_sizeX - 1][y].height
+					&& _CurMap[_sizeX - 51][y].height
+					>= _CurMap[_sizeX - 1][y].height - wave)
 				zmin = zmin + wave;
 		}
 	}

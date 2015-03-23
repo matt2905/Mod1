@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/21 17:27:14 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/23 19:11:34 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,11 @@ void	ft_run(std::list<t_map> &mapHill)
 	gd.setMap(mapHill);
 	gd.setWater();
 	tab = gd.getMap()->getMap();
-	gd.setBackground();
-	gd.draw(tab);
 	while (run)
 	{
-		run = gd.run();
 		gd.getWater()->Flow();
 		gd.drawWater(tab);
+		run = gd.run();
 	}
 }
 

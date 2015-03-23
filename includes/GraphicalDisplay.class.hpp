@@ -6,13 +6,14 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/21 16:34:08 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/23 19:11:43 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GRAPHICALDISPLAY_CLASS_HPP
 # define GRAPHICALDISPLAY_CLASS_HPP
 
+# include <GLFW/glfw3.h>
 # include <list>
 # include "Map.class.hpp"
 # include "Water.class.hpp"
@@ -29,10 +30,8 @@ class	GraphicalDisplay
 
 		bool				setMap(std::list<t_map> &);
 		bool				setWater(void);
-		void				setBackground(void);
 
 		bool				run();
-		void				draw(float **);
 		void				drawWater(float **);
 
 	private:
@@ -40,20 +39,6 @@ class	GraphicalDisplay
 		unsigned int	_height;
 		Map				*_map;
 		Water			*_water;
-//		Display			*_dis;
-//		Window			_win;
-//		XEvent			_report;
-//		GC				_gc;
-
-//		XImage			*_image;
-//		char			*_data;
-//		XImage			*_imageWater;
-//		char			*_dataWater;
-//		XImage			*_greyBG;
-//		char			*_dataGrey;
-//		XImage			*_whiteBG;
-//		char			*_dataWhite;
-
 		bool			rise;
 		bool			south;
 		bool			east;
@@ -61,16 +46,15 @@ class	GraphicalDisplay
 		bool			west;
 		bool			rain;
 		bool			evaporate;
+		GLFWwindow		*_win;
+		unsigned char	*_data;
 
 		GraphicalDisplay(void);
 		GraphicalDisplay(const GraphicalDisplay &);
 
 		GraphicalDisplay	&operator=(const GraphicalDisplay &);
 
-		float				getColor(float, float, int *, int *, int *);
-
-		void				expose(void);
-//		bool				buttonEvent(XEvent);
+		void				getColor(float, float, int *, int *, int *);
 
 };
 
