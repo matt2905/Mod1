@@ -6,14 +6,14 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/02/16 19:08:24 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/23 19:11:43 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GRAPHICALDISPLAY_CLASS_HPP
-# define GRAPHICALDISPLAY_CALL_HPP
+# define GRAPHICALDISPLAY_CLASS_HPP
 
-# include <X11/Xlib.h>
+# include <GLFW/glfw3.h>
 # include <list>
 # include "Map.class.hpp"
 # include "Water.class.hpp"
@@ -25,34 +25,20 @@ class	GraphicalDisplay
 		GraphicalDisplay(unsigned int, unsigned int);
 		~GraphicalDisplay(void);
 
+		Map					*getMap(void) const;
+		Water				*getWater(void) const;
+
 		bool				setMap(std::list<t_map> &);
 		bool				setWater(void);
 
-		void				run(void);
-		void				draw(float **);
-		void				drawWater(GC, float **);
-		void				setBackground(void);
-
-		void				expose(GC gc);
-		bool				buttonEvent(GC, XEvent);
+		bool				run();
+		void				drawWater(float **);
 
 	private:
 		unsigned int	_width;
 		unsigned int	_height;
 		Map				*_map;
 		Water			*_water;
-		Display			*_dis;
-		Window			_win;
-		XEvent			_report;
-		XImage			*_image;
-		char			*_data;
-		XImage			*_imageWater;
-		char			*_dataWater;
-		XImage			*_greyBG;
-		char			*_dataGrey;
-		XImage			*_whiteBG;
-		char			*_dataWhite;
-
 		bool			rise;
 		bool			south;
 		bool			east;
@@ -60,12 +46,23 @@ class	GraphicalDisplay
 		bool			west;
 		bool			rain;
 		bool			evaporate;
+		GLFWwindow		*_win;
+		unsigned char	*_data;
 
 		GraphicalDisplay(void);
 		GraphicalDisplay(const GraphicalDisplay &);
 
 		GraphicalDisplay	&operator=(const GraphicalDisplay &);
 
+		void				getColor(float, float, int *, int *, int *);
+
 };
+
+typedef struct			s_color
+{
+	unsigned char		r;
+	unsigned char		g;
+	unsigned char		b;
+}						t_color;
 
 #endif

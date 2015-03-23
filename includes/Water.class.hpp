@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/03 17:27:19 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/23 19:51:37 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,48 +23,50 @@ class Water {
 	public:
 		//Function
 		//	Constructor
-		Water( float ** Map, unsigned int sizeX, unsigned int sizeY);
+		Water(float ** Map, unsigned int sizeX, unsigned int sizeY);
 
 		//	Destructor
-		~Water( void );
+		~Water(void);
 
 		//	Setter
 		//		No setter
 
 		//	Getter
-		t_water ** getCurMap( void );
+		t_water ** getCurMap(void);
 
 		//	Scenario
-		void Rainy( void );
-		void Waves( bool n, bool s, bool e, bool w );
-		void Flood( void );
-		void Evapor( void );
-		void DiscWorld( bool n, bool s, bool e, bool w );
+		void Rainy(void);
+		void Waves(bool n, bool s, bool e, bool w);
+		void Flood(void);
+		void Evapor(void);
+		void DiscWorld(bool n, bool s, bool e, bool w);
 
 		//	Clear
-		void ClearCurMap( void );
+		void ClearCurMap(void);
 
 		//	Flowing
-		void Flow( void );
+		void Flow(void);
 	private:
 		//Function
 		//	Constructor
-		Water( void );
+		Water(void);
 
 		//	Copy
-		Water( const Water & water );
-		Water & operator=( const Water & water );
+		Water(const Water & water);
+		Water & operator=(const Water & water);
 
 		//	Calcul flow
-		void Drop( void );
-		void DropNew( unsigned int x, unsigned int y, float dir, float speed );
-		void Speed( void );
-		float SpeedNew( unsigned int x1, unsigned int y1, unsigned int x2,
-				unsigned int y2, float slow, float drop, float rlow );
-//		void Moving( void );
+		void Drop(void);
+		void DropNew(unsigned int x, unsigned int y, float dir, float speed);
+		void Speed(void);
+		float Transfert(unsigned int x1, unsigned int y1, unsigned int x2,
+				unsigned int y2, float drop);
+		void NewDir(unsigned int x, unsigned int y, float dir, float speed);
+		void NewSpd(unsigned int x, unsigned int y, float dir, float spd, float odir);
+//		void Moving(void);
 
 		//	Wave functions
-		float WavesMin( bool n, bool s, bool e, bool w );
+		float WavesMin(bool n, bool s, bool e, bool w, float wave);
 
 		//Attribute
 		//	Map Data

@@ -6,21 +6,21 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/02/16 14:23:49 by tbalea           ###   ########.fr        #
+#    Updated: 2015/03/23 12:47:28 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CFLAGS		=	-Wall -Wextra -Werror -g
+CFLAGS		=	-Wall -Wextra -Werror -O3
 
 CC			=	g++
 
-INC			=	-I includes -I /usr/X11R6/include
+INC			=	-I includes -I $(HOME)/.brew/include
+
+LIB			=	-L ~/.brew/lib -lglfw3 -framework OpenGL
 
 DOBJ		=	obj/
 
 NAME		=	mod1
-
-LIB			=	-L /usr/X11R6/lib -lX11
 
 SRC			=	srcs/main.cpp					\
 				srcs/GraphicalDisplay.class.cpp	\

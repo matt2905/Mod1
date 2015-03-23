@@ -6,13 +6,10 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/15 15:48:23 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/23 20:32:22 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <X11/keysym.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/select.h>
@@ -23,35 +20,11 @@
 */
 GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 {
-	XSetWindowAttributes	attributes;
-	Visual					*visual;
-	int						screen;
-	int						depth;
-
 	_width = width;
 	_height = height;
 	_map = new Map(_width, _height);
 
-	_dis = XOpenDisplay(NULL);
-	screen = DefaultScreen(_dis);
-	visual = DefaultVisual(_dis, screen);
-	depth = DefaultDepth(_dis, screen);
-	attributes.background_pixel = XBlackPixel(_dis, screen);
-
-	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, 1500, 900, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
-	XMapWindow(_dis, _win);
-	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
-
-	_data = new char[_width * _height * 4];
-	_image = XCreateImage(_dis, visual, depth, ZPixmap, 0, _data, _width, _height, 32, 0);
-	_dataWater = new char[_width * _height * 4];
-	_imageWater = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataWater, _width, _height, 32, 0);
-
-	_dataGrey = new char[200 * 25 * 4];
-	_greyBG = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataGrey, 200, 25, 32, 0);
-	_dataWhite = new char[200 * 25 * 4];
-	_whiteBG = XCreateImage(_dis, visual, depth, ZPixmap, 0, _dataWhite, 200, 25, 32, 0);
-
+	_water = NULL;
 	rise = false;
 	rain = false;
 	evaporate = false;
@@ -59,16 +32,39 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	east = false;
 	north = false;
 	west = false;
+
+	if (!glfwInit())
+		throw "GLFW init failed";
+	_win = glfwCreateWindow(1800, 1300, "Mod1 by tbalea and mmartin", NULL, NULL);
+	if (!_win)
+		throw "GlFW create window failed";
+	glfwMakeContextCurrent(_win);
+
+	_data = new unsigned char[width * height * 4];
 }
 
 GraphicalDisplay::~GraphicalDisplay(void)
 {
 	if (_map)
 		delete _map;
-	XDestroyImage(_image);
-	XDestroyImage(_greyBG);
-	XDestroyImage(_whiteBG);
-	XCloseDisplay(_dis);
+	if (_water)
+		delete _water;
+	if (_win)
+		glfwDestroyWindow(_win);
+	glfwTerminate();
+}
+
+/*
+**	Getter
+*/
+Map			*GraphicalDisplay::getMap(void) const
+{
+	return (_map);
+}
+
+Water		*GraphicalDisplay::getWater(void) const
+{
+	return (_water);
 }
 
 /*
@@ -90,287 +86,125 @@ bool		GraphicalDisplay::setWater(void)
 	return (true);
 }
 
-/*
-**		Draw pixel per pixel
-**		TODO: degraded on color from 0.01 to 0.8 with brown
-*/
-void		GraphicalDisplay::draw(float **tab)
+void		GraphicalDisplay::getColor(float earth, float water, int *r, int *g, int *b)
 {
-	int				r;
-	int				g;
-	int				b;
-	int				proj_x;
-	int				proj_y;
-	int				i;
-
-	for (size_t x = 0; x < _width; x++)
+	float			color;
+	static t_color	blue[11] =
 	{
-		for (size_t y = 0; y < _height; y++)
-		{
-			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = tab[x][y] * -100 + 0.25f * x + 0.25f * y + 200; 
-			i = proj_y * _image->bytes_per_line + proj_x * 4;
-			if (tab[x][y] > 0.8)
-			{
-				r = tab[x][y] * 255;
-				g = tab[x][y] * 255;
-				b = 255;
-			}
-			else if (tab[x][y] > 0.01)
-			{
-				r = 73 + tab[x][y] * 255;
-				g = 49 + tab[x][y] * 255;
-				b = 28 + tab[x][y] * 255 / 2;
-			}
-			else
-			{
-				r = 0;
-				g = 255;
-				b = 0;
-			}
-			if (r > 255)
-				r = 255;
-			if (g > 255)
-				g = 255;
-			if (b > 255)
-				b = 255;
-			_data[i] = b;
-			_data[i + 1] = g;
-			_data[i + 2] = r;
-		}
+		{36,185,228},
+		{33,174,219},
+		{31,164,211},
+		{28,153,202},
+		{26,142,194},
+		{24,131,185},
+		{21,120,177},
+		{19,109,168},
+		{16,99,160},
+		{14,88,151},
+		{11,77,143}
+	};
+	int				i = water * 10;
+
+	*r = blue[i].r;
+	*g = blue[i].g;
+	*b = blue[i].b;
+	if (!water)
+	{
+		color = earth * 255;
+		*r = (earth > 0.01 ? 100 + color : 1);
+		*g = (earth > 0.01 ? 60 + color : 121);
+		*b = (earth > 0.01 ? 20 + color : 111);
 	}
+	*r = (*r > 255 ? 255 : *r);
+	*g = (*g > 255 ? 255 : *g);
+	*b = (*b > 255 ? 255 : *b);
 }
 
 /*
 **	Draw water in image.
 */
-void		GraphicalDisplay::drawWater(GC gc, float **tab)
+void		GraphicalDisplay::drawWater(float **tab)
 {
-	int				r;
-	int				g;
-	int				b;
-	t_water			**map;
-	int				proj_x;
-	int				proj_y;
-	int				i;
+	int			r;
+	int			g;
+	int			b;
+	t_water		**map;
+	int			width;
+	int			height;
+	float		tmp_x = 0;
+	float		tmp_y = 0;
+	float		proj_x;
+	float		proj_y;
 
 	map = _water->getCurMap();
+
+	glfwGetFramebufferSize(_win, &width, &height);
+	glViewport(0, 0, width * 2, height * 2);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-width, width, height, -height, -100, 100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(-1000, 500, 0);
+
+	glBegin(GL_POINTS);
 	for (size_t x = 0; x < _width; x++)
 	{
+		proj_x = tmp_x;
+		proj_y = tmp_y;
 		for (size_t y = 0; y < _height; y++)
 		{
-			proj_x = 0.5f * x - 0.5f * y + 500;
-			proj_y = 0.25f * x + 0.25 * y + 200;
-			if (map[x][y].height > 0)
+			getColor(tab[x][y], map[x][y].height, &r, &g, &b);
+			glColor3ub(r, g, b);
+			glVertex2f(proj_x, proj_y + (tab[x][y] + map[x][y].height) * -100);
+			if (x == _width - 1)
 			{
-				proj_y += (map[x][y].height + tab[x][y])* -100;
-				r = 0;
-				g = 0;
-				b = 255;
-			}
-			else
-			{
-				proj_y += tab[x][y] * -100;
-				if (tab[x][y] > 0.8)
+				for (float earth = 0.02; earth < tab[x][y]; earth += 0.01)
 				{
-					r = tab[x][y] * 255;
-					g = tab[x][y] * 255;
-					b = 255;
+					getColor(earth, 0, &r, &g, &b);
+					glColor3ub(r, g, b);
+					glVertex2f(proj_x, proj_y + earth * -100);
 				}
-				else if (tab[x][y] > 0.01)
+				for (float water = map[x][y].height + tab[x][y]; water < 1; water += 0.01)
 				{
-					r = 73 + tab[x][y] * 255;
-					g = 49 + tab[x][y] * 255;
-					b = 28 + tab[x][y] * 255 / 2;
+					glColor3ub(0, 0, 0);
+					glVertex2f(proj_x, proj_y + water * -100);
 				}
-				else
-				{
-					r = 0;
-					g = 255;
-					b = 0;
-				}
-				if (r > 255)
-					r = 255;
-				if (g > 255)
-					g = 255;
-				if (b > 255)
-					b = 255;
-
 			}
-			i = proj_y * _imageWater->bytes_per_line + proj_x * 4;
-			if ( i < 0)
-				continue ;
-			_dataWater[i] = b;
-			_dataWater[i + 1] = g;
-			_dataWater[i + 2] = r;
+			proj_x -= 0.5;
+			proj_y += 0.25;
 		}
+		for (float earth = 0.02; earth < tab[x][_height - 1]; earth += 0.01)
+		{
+			getColor(earth, 0, &r, &g, &b);
+			glColor3ub(r, g, b);
+			glVertex2f(proj_x, proj_y + earth * -100);
+		}
+		tmp_x += 0.5;
+		tmp_y += 0.25;
 	}
-	XPutImage(_dis, _win, gc, _imageWater, 0, 0, 200, 200, _width, _height);
-}
-
-
-/*
-**	Draw image foreground for button.
-*/
-void		GraphicalDisplay::setBackground(void)
-{
-	for (int x = 0; x < 200; x++)
-	{
-		for (int y = 0; y < 25; y++)
-		{
-			XPutPixel(_greyBG, x, y, (!y || !x ? 0x000000 : 0xd3d3d3));
-			XPutPixel(_whiteBG, x, y, (!y || !x ? 0x000000 : 0xFFFFFF));
-		}
-	}
-}
-
-
-/*
-**	Expose, redraw each button and the image.
-*/
-void		GraphicalDisplay::expose(GC gc)
-{
-	XPutImage(_dis, _win, gc, _imageWater, 0, 0, 200, 200, _width, _height);
-	XPutImage(_dis, _win, gc, (rise ? _whiteBG : _greyBG), 0, 0, 0, 0, 200, 25);
-	XDrawString(_dis, _win, gc, 50, 15, "Rise water", 10);
-	XPutImage(_dis, _win, gc, (rain ? _whiteBG : _greyBG), 0, 0, 200, 0, 200, 25);
-	XDrawString(_dis, _win, gc, 250, 15, "Rain water", 10);
-	XPutImage(_dis, _win, gc, (evaporate ? _whiteBG : _greyBG), 0, 0, 400, 0, 200, 25);
-	XDrawString(_dis, _win, gc, 450, 15, "Evaporate water", 15);
-	XPutImage(_dis, _win, gc, (south ? _whiteBG : _greyBG), 0, 0, 0, 25, 200, 25);
-	XDrawString(_dis, _win, gc, 50, 40, "South wave", 10);
-	XPutImage(_dis, _win, gc, (east ? _whiteBG : _greyBG), 0, 0, 200, 25, 200, 25);
-	XDrawString(_dis, _win, gc, 250, 40, "East wave", 9);
-	XPutImage(_dis, _win, gc, (north ? _whiteBG : _greyBG), 0, 0, 400, 25, 200, 25);
-	XDrawString(_dis, _win, gc, 450, 40, "North wave", 10);
-	XPutImage(_dis, _win, gc, (west ? _whiteBG : _greyBG), 0, 0, 600, 25, 200, 25);
-	XDrawString(_dis, _win, gc, 650, 40, "West wave", 9);
-	XPutImage(_dis, _win, gc, _greyBG, 0, 0, 800, 25, 200, 25);
-	XDrawString(_dis, _win, gc, 850, 40, "All wave", 8);
-	XPutImage(_dis, _win, gc, _greyBG, 0, 0, 600, 0, 200, 25);
-	XDrawString(_dis, _win, gc, 650, 15, "Reset", 5);
-	XPutImage(_dis, _win, gc, _greyBG, 0, 0, 800, 0, 200, 25);
-	XDrawString(_dis, _win, gc, 850, 15, "Exit", 4);
-	XFlush(_dis);
-}
-
-
-/*
-**	On click check position x | y for button event.
-*/
-bool		GraphicalDisplay::buttonEvent(GC gc, XEvent event)
-{
-	int		x = event.xbutton.x;
-	int		y = event.xbutton.y;
-
-	if (x < 1000 && y < 50)
-	{
-		if (y < 25 && x > 800 && x < 1000)
-			return (true);
-		if (y < 25)
-		{
-			south = false;
-			east = false;
-			north = false;
-			west = false;
-		}
-		else
-		{
-			rain = false;
-			rise = false;
-			evaporate = false;
-		}
-		if (y < 25 && x < 200)
-		{
-			rise = (rise ? false : true);
-			rain = false;
-			evaporate = false;
-		}
-		else if (y < 25 && x < 400)
-		{
-			rise = false;
-			rain = (rain ? false : true);
-			evaporate = false;
-		}
-		else if (y < 25 && x < 600)
-		{
-			rise = false;
-			rain = false;
-			evaporate = (evaporate ? false : true);
-		}
-		else if (y < 25 && x < 800)
-		{
-			rise = false;
-			rain = false;
-			evaporate = false;
-			memcpy(_dataWater, _data, _height * _width * 4);
-			_water->ClearCurMap();
-		}
-		else if (y > 25 && x < 200)
-			south = (south ? false : true);
-		else if (y > 25 && x < 400)
-			east = (east ?  false: true);
-		else if (y > 25 && x < 600)
-			north = (north ? false: true);
-		else if (y > 25 && x < 800)
-			west = (west ? false : true);
-		else if (y > 25 && x < 1000)
-		{
-			south = true;
-			east = true;
-			north = true;
-			west = true;
-		}
-		this->expose(gc);
-	}
-	return (false);
+	glEnd();
+	glfwSwapBuffers(_win);
 }
 
 /*
-**		Run XQuartz in infinity loop for catch event
+**		Catch Event for close window and run senary
 */
-void		GraphicalDisplay::run(void)
+bool		GraphicalDisplay::run(void)
 {
-	GC				gc;
-	float			**tab = _map->getMap();
-	bool			run = true;
+	glfwPollEvents();
+	if (glfwWindowShouldClose(_win) || glfwGetKey(_win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		return (false);
 
-	gc = XCreateGC(_dis, _win, 0, 0);
-	this->setBackground();
-	this->draw(tab);
-	memcpy(_dataWater, _data, _height * _width * 4);
+	if (rise)
+		_water->Flood();
+	if (south || east || north || west)
+		_water->Waves(north, south, east, west);
+	if (rain)
+		_water->Rainy();
+	if (evaporate)
+		_water->Evapor();
 
-	while (run)
-	{
-		while (XPending(_dis))
-		{
-			XNextEvent(_dis, &_report);
-			switch (_report.type) {
-				case Expose:
-					if (_report.xexpose.count == 0)
-						this->expose(gc);
-				break;
-				case KeyPress:
-					if (XLookupKeysym(&_report.xkey, 0) == XK_q)
-						run = false;
-				break;
-				case ButtonPress:
-					if (this->buttonEvent(gc, _report))
-						run = false;
-				break;
-			}
-		}
-		if (rise || rain || south || east || north || west)
-		{
-			if (rise)
-				_water->Flood();
-			if (south || east ||  north || west)
-				_water->Waves(north, south, east, west);
-			if (rain)
-				_water->Rainy();
-			_water->Flow();
-			this->drawWater(gc, tab);
-		}
-	}
-	XFreeGC(_dis, gc);
+	return (true);
 }
