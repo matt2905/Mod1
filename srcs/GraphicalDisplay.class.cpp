@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/24 11:49:36 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/24 12:06:30 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ void		GraphicalDisplay::drawWater(float **tab)
 }
 
 
-void		GraphicalDisplay::drawButton(int x, int y, int color)
+void		GraphicalDisplay::drawButton(int x, int y, int color, std::string)
 {
 	int		xmax = x + 200;
 	int		ymax = y + 25;
@@ -219,31 +219,31 @@ void		GraphicalDisplay::drawAllButton(void)
 
 	// Rise
 	color = (rise ? 0xFF : 0xD3);
-	this->drawButton(-795, -495, color);
+	this->drawButton(-795, -495, color, "Rise water");
 	// Rain
 	color = (rain ? 0xFF : 0xD3);
-	this->drawButton(-594, -495, color);
+	this->drawButton(-594, -495, color, "Rain water");
 	// Evaporate
 	color = (evaporate ? 0xFF : 0xD3);
-	this->drawButton(-393, -495, color);
+	this->drawButton(-393, -495, color, "Evaporate water");
 	// Reset
-	this->drawButton(-192, -495, 0xD3);
+	this->drawButton(-192, -495, 0xD3, "Reset");
 	// Exit
-	this->drawButton(9, -495, 0xD3);
+	this->drawButton(9, -495, 0xD3, "Exit");
 	// South
 	color = (south ? 0xFF : 0xD3);
-	this->drawButton(-795, -469, color);
+	this->drawButton(-795, -469, color, "South wave");
 	// East
 	color = (east ? 0xFF : 0xD3);
-	this->drawButton(-594, -469, color);
+	this->drawButton(-594, -469, color, "East wave");
 	// North
 	color = (north ? 0xFF : 0xD3);
-	this->drawButton(-393, -469, color);
+	this->drawButton(-393, -469, color, "North wave");
 	// West
 	color = (west ? 0xFF : 0xD3);
-	this->drawButton(-192, -469, color);
+	this->drawButton(-192, -469, color, "West wave");
 	// All
-	this->drawButton(9, -469, 0xD3);
+	this->drawButton(9, -469, 0xD3, "All wave");
 }
 
 /*
