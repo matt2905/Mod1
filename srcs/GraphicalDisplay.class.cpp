@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/23 20:46:50 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/24 11:49:36 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	rise = false;
 	rain = false;
 	evaporate = false;
-	south = true;
-	east = true;
-	north = true;
-	west = true;
+	south = false;
+	east = false;
+	north = false;
+	west = false;
 
 	if (!glfwInit())
 		throw "GLFW init failed";
@@ -146,7 +146,10 @@ void		GraphicalDisplay::drawWater(float **tab)
 	glOrtho(-width, width, height, -height, -100, 100);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
 	glTranslatef(-1000, 500, 0);
+
+	this->drawAllButton();
 
 	glBegin(GL_POINTS);
 	for (size_t x = 0; x < _width; x++)
@@ -192,20 +195,72 @@ void		GraphicalDisplay::drawWater(float **tab)
 }
 
 
+void		GraphicalDisplay::drawButton(int x, int y, int color)
+{
+	int		xmax = x + 200;
+	int		ymax = y + 25;
+	int		tmp_y;
+
+	glBegin(GL_POINTS);
+	for (; x < xmax; x++)
+	{
+		for (tmp_y = y; tmp_y < ymax; tmp_y++)
+		{
+			glColor3ub(color, color, color);
+			glVertex2f(x, tmp_y);
+		}
+	}
+	glEnd();
+}
+
+void		GraphicalDisplay::drawAllButton(void)
+{
+	int		color;
+
+	// Rise
+	color = (rise ? 0xFF : 0xD3);
+	this->drawButton(-795, -495, color);
+	// Rain
+	color = (rain ? 0xFF : 0xD3);
+	this->drawButton(-594, -495, color);
+	// Evaporate
+	color = (evaporate ? 0xFF : 0xD3);
+	this->drawButton(-393, -495, color);
+	// Reset
+	this->drawButton(-192, -495, 0xD3);
+	// Exit
+	this->drawButton(9, -495, 0xD3);
+	// South
+	color = (south ? 0xFF : 0xD3);
+	this->drawButton(-795, -469, color);
+	// East
+	color = (east ? 0xFF : 0xD3);
+	this->drawButton(-594, -469, color);
+	// North
+	color = (north ? 0xFF : 0xD3);
+	this->drawButton(-393, -469, color);
+	// West
+	color = (west ? 0xFF : 0xD3);
+	this->drawButton(-192, -469, color);
+	// All
+	this->drawButton(9, -469, 0xD3);
+}
+
 /*
 **	On click check position x | y for button event.
 */
-/*
-bool		GraphicalDisplay::buttonEvent(XEvent event)
-{
-	int		x = event.xbutton.x;
-	int		y = event.xbutton.y;
 
-	if (x < 1000 && y < 50)
+bool		GraphicalDisplay::buttonEvent(void)
+{
+	double		x;
+	double		y;
+
+	glfwGetCursorPos(_win, &x, &y);
+	if (x < 1005 && x > 5 && y < 55 && y > 5)
 	{
-		if (y < 25 && x > 800 && x < 1000)
+		if (y < 30 && x > 809)
 			return (true);
-		if (y < 25)
+		if (y < 30)
 		{
 			south = false;
 			east = false;
@@ -218,60 +273,68 @@ bool		GraphicalDisplay::buttonEvent(XEvent event)
 			rise = false;
 			evaporate = false;
 		}
-		if (y < 25 && x < 200)
+		if (y < 30 && x < 205)
 		{
 			rise = (rise ? false : true);
 			rain = false;
 			evaporate = false;
 		}
-		else if (y < 25 && x < 400)
+		else if (y < 30 && x < 406)
 		{
 			rise = false;
 			rain = (rain ? false : true);
 			evaporate = false;
 		}
-		else if (y < 25 && x < 600)
+		else if (y < 30 && x < 607)
 		{
 			rise = false;
 			rain = false;
 			evaporate = (evaporate ? false : true);
 		}
-		else if (y < 25 && x < 800)
+		else if (y < 30 && x < 808)
 		{
 			rise = false;
 			rain = false;
 			evaporate = false;
-			memcpy(_dataWater, _data, _height * _width * 4);
 			_water->ClearCurMap();
 		}
-		else if (y > 25 && x < 200)
+		else if (y > 30 && x < 205)
 			south = (south ? false : true);
-		else if (y > 25 && x < 400)
+		else if (y > 30 && x < 406)
 			east = (east ?  false: true);
-		else if (y > 25 && x < 600)
+		else if (y > 30 && x < 607)
 			north = (north ? false: true);
-		else if (y > 25 && x < 800)
+		else if (y > 30 && x < 808)
 			west = (west ? false : true);
-		else if (y > 25 && x < 1000)
+		else if (y > 30 && x < 1009)
 		{
 			south = true;
 			east = true;
 			north = true;
 			west = true;
 		}
-		this->expose();
 	}
 	return (false);
 }
-*/
+
 /*
 **		Catch Event for close window and run senary
 */
 bool		GraphicalDisplay::run(void)
 {
+	static	bool release = true;
+
 	glfwPollEvents();
 	if (glfwWindowShouldClose(_win) || glfwGetKey(_win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		return (false);
+	if (glfwGetMouseButton(_win, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	{
+		if (release && this->buttonEvent())
+			return (false);
+		release = false;
+	}
+	else
+		release = true;
 
 	if (rise)
 		_water->Flood();
