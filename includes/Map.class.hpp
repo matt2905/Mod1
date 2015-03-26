@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/27 17:44:25 by tbalea            #+#    #+#             */
-/*   Updated: 2015/01/30 14:56:24 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/26 13:06:06 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <iostream>
 # include <list>
 # include <string>
-# include "Map.h"
+# include "mod1.h"
 
 class Map {
 	public:

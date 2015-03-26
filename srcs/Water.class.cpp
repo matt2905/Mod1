@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:18:05 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/20 18:51:36 by tbalea           ###   ########.fr       */
+/*   Updated: 2015/03/26 12:56:50 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,7 +371,7 @@ void Water::Speed(void)
 	double	PI = std::atan(1.0)*4;
 	float	lim = 0.001;
 	float	drop;
-	float tmp = 0;
+/*	float tmp = 0;
 
 	for (unsigned int x = 0; x < _sizeX; x++)
 	{
@@ -380,7 +380,7 @@ void Water::Speed(void)
 			tmp += _CurMap[x][y].height;
 		}
 	}
-	for (unsigned int x = 0; x < _sizeX; x++)
+*/	for (unsigned int x = 0; x < _sizeX; x++)
 	{
 		for (unsigned int y = 0; y < _sizeY; y++)
 		{
@@ -451,7 +451,7 @@ void Water::Speed(void)
 			}
 		}
 	}
-	printf("quantite = %f\n", tmp);
+/*	printf("quantite = %f\n", tmp);
 	for (unsigned int x = 0; x < _sizeX; x++)
 	{
 		for (unsigned int y = 0; y < _sizeY; y++)
@@ -468,7 +468,7 @@ void Water::Speed(void)
 			tmp = tmp + _CurMap[x][y].height;
 		}
 	}
-	printf("quantite 2 = %f\n\n", tmp);
+	printf("quantite 2 = %f\n\n", tmp);*/
 }
 
 //		Speed modification

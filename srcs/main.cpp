@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/20 13:05:10 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/26 14:29:36 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fstream>
-#include "map.h"
 #include "Map.class.hpp"
 #include "GraphicalDisplay.class.hpp"
 

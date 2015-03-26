@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/26 12:37:05 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/26 14:30:09 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include <list>
 # include "Map.class.hpp"
 # include "Water.class.hpp"
-# include "map.h"
 
 class	GraphicalDisplay
 {
@@ -74,12 +73,5 @@ class	GraphicalDisplay
 		bool				buttonEvent(XEvent);
 
 };
-
-typedef struct			s_color
-{
-	unsigned char		r;
-	unsigned char		g;
-	unsigned char		b;
-}						t_color;
 
 #endif
