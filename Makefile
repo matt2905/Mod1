@@ -6,7 +6,7 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/03/21 16:21:09 by mmartin          ###   ########.fr        #
+#    Updated: 2015/03/26 12:36:49 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ CFLAGS		=	-Wall -Wextra -Werror -O3
 
 CC			=	g++
 
-INC			=	-I includes
+INC			=	-I includes -I /usr/X11/include
 
 DOBJ		=	obj/
 

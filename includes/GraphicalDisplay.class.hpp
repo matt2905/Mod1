@@ -6,12 +6,12 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:33:30 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/20 12:59:48 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/03/26 12:37:05 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GRAPHICALDISPLAY_CLASS_HPP
-# define GRAPHICALDISPLAY_CALL_HPP
+# define GRAPHICALDISPLAY_CLASS_HPP
 
 # include <X11/Xlib.h>
 # include <list>
