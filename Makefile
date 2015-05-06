@@ -26,6 +26,9 @@ SRC			=	srcs/main.cpp					\
 				srcs/AScenary.class.cpp			\
 				srcs/AScenaryRain.class.cpp		\
 				srcs/AScenaryWave.class.cpp		\
+				srcs/AScenaryFlood.class.cpp	\
+				srcs/AScenaryEvap.class.cpp		\
+				srcs/AScenaryDisc.class.cpp		\
 				srcs/GraphicalDisplay.class.cpp	\
 				srcs/Map.class.cpp				\
 				srcs/Water.class.cpp			\

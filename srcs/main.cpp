@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 #include <unistd.h>
 #include <fstream>
 #include "Map.class.hpp"
@@ -94,6 +94,7 @@ int		main(int argc, char **argv)
 		std::cout << "Empty file or open failed" << std::endl;
 		return (1);
 	}
+	std::srand(std::time(NULL));
 	ft_run(mapHill);
 	return (0);
 }

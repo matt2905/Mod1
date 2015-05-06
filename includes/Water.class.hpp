@@ -18,9 +18,12 @@
 # include <cstdlib>
 # include "AScenaryRain.class.hpp"
 # include "AScenaryWave.class.hpp"
+# include "AScenaryFlood.class.hpp"
+# include "AScenaryEvap.class.hpp"
+# include "AScenaryDisc.class.hpp"
 # include "mod1.h"
 
-class Water: public AScenaryRain, public AScenaryWave
+class Water: public AScenaryRain, public AScenaryWave, public AScenaryFlood, public AScenaryEvap, public AScenaryDisc
 {
 	public:
 		//Function
@@ -29,11 +32,6 @@ class Water: public AScenaryRain, public AScenaryWave
 
 		//	Destructor
 		virtual ~Water(void);
-
-		//	Scenario
-		void Flood(void);
-		void Evapor(void);
-		void DiscWorld(bool n, bool s, bool e, bool w);
 
 		//	Clear
 		virtual void ClearCurMap(void);

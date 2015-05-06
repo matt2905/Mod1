@@ -22,115 +22,13 @@
 
 //	Constructor
 Water::Water(float ** Map, unsigned int sizeX, unsigned int sizeY) :
-	AScenary(Map, sizeX, sizeY), AScenaryRain(Map, sizeX, sizeY), AScenaryWave(Map, sizeX, sizeY)
+	AScenary(Map, sizeX, sizeY), AScenaryRain(Map, sizeX, sizeY), AScenaryWave(Map, sizeX, sizeY), AScenaryFlood(Map, sizeX, sizeY), AScenaryEvap(Map, sizeX, sizeY), AScenaryDisc(Map, sizeX, sizeY)
 {
 }
 
 //	Destructor
 Water::~Water(void)
 {
-}
-
-//	Scenario
-void Water::Flood(void)
-{
-	double	PI = std::atan(1.0)*8;
-
-	//	Give speed of flowing
-	float	flood = 0.01;
-	float	hillmin = _Map[0][0];
-	float	zmin = _Map[0][0] + _CurMap[0][0].height;
-
-	srand (time(NULL));
-	//	Check lowest point of map
-	if (zmin < 1 && hillmin < 1 && hillmin > 0)
-	{
-		for (unsigned int x = 0; x < _sizeX && hillmin > 0; x++)
-		{
-			for (unsigned int y = 0; y < _sizeY && hillmin > 0; y++)
-			{
-				if (_Map[x][y] < hillmin)
-				{
-					hillmin = _Map[x][y];
-					zmin = _Map[x][y] + _CurMap[x][y].height;
-				}
-			}
-		}
-	}
-	zmin += flood;
-	if (zmin > 1)
-		zmin = 1;
-
-	//	Add flood
-	for (unsigned int x = 0; x < _sizeX; x++)
-	{
-		for (unsigned int y = 0; y < _sizeY; y++)
-		{
-			if (_Map[x][y] + _CurMap[x][y].height < zmin)
-				_CurMap[x][y].height += flood;
-
-			if (_CurMap[x][y].height == flood)
-				_CurMap[x][y].dir = ((1.0 + rand()) * PI) / ((RAND_MAX + 1.0) * PI);
-
-			//	limit flood
-			if (_Map[x][y] + _CurMap[x][y].height > 1)
-				_CurMap[x][y].height = 1 - _Map[x][y];
-		}
-	}
-}
-
-void Water::Evapor(void)
-{
-
-	//	Give evaporate speed;
-	float	hot = 0.01;
-
-	for (unsigned int x = 0; x < _sizeX; x++)
-	{
-		for (unsigned int y = 0; y < _sizeY; y++)
-	{
-			_CurMap[x][y].height -= hot;
-			if (_CurMap[x][y].height <= 0.0)
-			{
-				_CurMap[x][y].height = 0;
-				_CurMap[x][y].speed = 0;
-			}
-		}
-	}
-}
-
-void Water::DiscWorld(bool n, bool s, bool e, bool w)
-{
-	double	PI = std::atan(1.0);
-
-	//	North fall
-	for (unsigned int x = 0; x < _sizeX && n; x++)
-	{
-		_CurMap[x][0].height = 0;
-		_CurMap[x][0].speed = 0;
-		_CurMap[x][0].dir = PI; 
-	}
-	//	South fall
-	for (unsigned int x = 0; x < _sizeX && s; x++)
-	{
-		_CurMap[x][_sizeY-1].height = 0;
-		_CurMap[x][_sizeY-1].speed = 0;
-		_CurMap[x][_sizeY-1].dir = 5 * PI;
-	}
-	//	Est fall
-	for (unsigned int y = 0; y < _sizeY && e; y++)
-	{
-		_CurMap[0][y].height = 0;
-		_CurMap[0][y].speed = 0;
-		_CurMap[0][y].dir = 3 * PI;
-	}
-	//	West fall
-	for (unsigned int y = 0; y < _sizeY && w; y++)
-	{
-		_CurMap[_sizeX-1][y].height = 0;
-		_CurMap[_sizeX-1][y].speed = 0;
-		_CurMap[_sizeX-1][y].dir = 7 * PI;
-	}
 }
 
 //	Clear
