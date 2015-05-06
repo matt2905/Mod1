@@ -23,6 +23,9 @@ NAME		=	mod1
 LIB			=	-L /usr/X11/lib -lX11
 
 SRC			=	srcs/main.cpp					\
+				srcs/AScenary.class.cpp			\
+				srcs/AScenaryRain.class.cpp		\
+				srcs/AScenaryWave.class.cpp		\
 				srcs/GraphicalDisplay.class.cpp	\
 				srcs/Map.class.cpp				\
 				srcs/Water.class.cpp			\

@@ -13,39 +13,33 @@
 #ifndef WATER_CLASS_HPP
 # define WATER_CLASS_HPP
 
-# include "Map.class.hpp"
-# include "mod1.h"
 # include <cmath>
 # include <ctime>
 # include <cstdlib>
+# include "AScenaryRain.class.hpp"
+# include "AScenaryWave.class.hpp"
+# include "mod1.h"
 
-class Water {
+class Water: public AScenaryRain, public AScenaryWave
+{
 	public:
 		//Function
 		//	Constructor
 		Water(float ** Map, unsigned int sizeX, unsigned int sizeY);
 
 		//	Destructor
-		~Water(void);
-
-		//	Setter
-		//		No setter
-
-		//	Getter
-		t_water ** getCurMap(void);
+		virtual ~Water(void);
 
 		//	Scenario
-		void Rainy(void);
-		void Waves(bool n, bool s, bool e, bool w);
 		void Flood(void);
 		void Evapor(void);
 		void DiscWorld(bool n, bool s, bool e, bool w);
 
 		//	Clear
-		void ClearCurMap(void);
+		virtual void ClearCurMap(void);
 
 		//	Flowing
-		void Flow(void);
+		virtual void Flow(void);
 	private:
 		//Function
 		//	Constructor
@@ -65,19 +59,6 @@ class Water {
 		void NewSpd(unsigned int x, unsigned int y, float dir, float spd, float odir);
 //		void Moving(void);
 
-		//	Wave functions
-		float WavesMin(bool n, bool s, bool e, bool w);
-
-		//Attribute
-		//	Map Data
-		bool _w;
-		bool _s;
-		bool _e;
-		bool _n;
-		float ** _Map;
-		unsigned int _sizeX;
-		unsigned int _sizeY;
-		t_water ** _CurMap;
 };
 
 #endif

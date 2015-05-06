@@ -22,119 +22,16 @@
 
 //	Constructor
 Water::Water(float ** Map, unsigned int sizeX, unsigned int sizeY) :
-	_w(true), _s(true), _e(true), _n(true), _Map(Map), _sizeX(sizeX), _sizeY(sizeY)
+	AScenary(Map, sizeX, sizeY), AScenaryRain(Map, sizeX, sizeY), AScenaryWave(Map, sizeX, sizeY)
 {
-	double	PI = std::atan(1.0) * 8;
-	_CurMap = new t_water*[_sizeX];
-	for (unsigned int x = 0; x < _sizeX; x++)
-	{
-		_CurMap[x] = new t_water[_sizeY];
-		for (unsigned int y = 0; y < _sizeY; y++)
-		{
-			_CurMap[x][y].height = 0;
-			_CurMap[x][y].speed = 0;
-			_CurMap[x][y].dir = PI;
-		}
-	}
 }
 
 //	Destructor
 Water::~Water(void)
 {
-	for (unsigned int x = 0; x < _sizeX; x++)
-		delete [] this->_CurMap[x];
-	delete [] this->_CurMap;
-}
-
-//	Getter
-t_water ** Water::getCurMap(void)
-{
-	return this->_CurMap;
 }
 
 //	Scenario
-void Water::Rainy(void)
-{
-	double	PI = std::atan(1.0)*8;
-
-	//	Give speed of flowing
-	float			rainy = 0.01;
-
-	//	Give density (lowest is the number, higher is the density)
-	unsigned int	density = 1000;
-	unsigned int	precipitate = (_sizeX * _sizeY) / density;
-	unsigned int	x;
-	unsigned int	y;
-
-	srand (time(NULL));
-	for (unsigned int rain = 0; rain < precipitate; rain++)
-	{
-		x = rand() % _sizeX;
-		y = rand() % _sizeY;
-		if (_Map[x][y] + _CurMap[x][y].height + rainy < 1)
-		{
-			_CurMap[x][y].height += rainy;
-
-			//	Give random direction
-			if (_CurMap[x][y].height == rainy)
-				_CurMap[x][y].dir = ((rand() + 1.0) * PI) / ((1.0 + RAND_MAX) * PI);
-		}
-	}
-}
-
-void Water::Waves(bool n, bool s, bool e, bool w)
-{
-	double PI = std::atan(1.0);
-
-	//	Give speed of flowing
-	float	waves = 0.01;
-
-	//	Check lowest hight
-	float	zmin = WavesMin(n, s, e, w) + waves;
-
-	//	Increase hight of wave
-	//		North wave
-	for (unsigned int x = 0; x < _sizeX && n; x++)
-	{
-		if (_CurMap[x][0].height + _Map[x][0] < zmin + waves)
-			_CurMap[x][0].height += waves;
-		if (_CurMap[x][0].height + _Map[x][0] > 1)
-			_CurMap[x][0].height = 1 - _Map[x][0];
-		_CurMap[x][0].dir = 5 * PI;
-//		_CurMap[x][0].speed = 0.5;
-	}
-	//		South wave
-	for (unsigned int x = 0; x < _sizeX && s; x++)
-	{
-		if (_CurMap[x][_sizeY-1].height + _Map[x][_sizeY-1] < zmin + waves)
-			_CurMap[x][_sizeY-1].height += waves;
-		if (_CurMap[x][_sizeY-1].height + _Map[x][_sizeY-1] > 1)
-			_CurMap[x][_sizeY-1].height = 1 - _Map[x][_sizeY-1];
-		_CurMap[x][_sizeY-1].dir = PI;
-//		_CurMap[x][_sizeY-1].speed = 0.5;
-	}
-	//		West wave
-	for (unsigned int y = 0; y < _sizeY && w; y++)
-	{
-		if (_CurMap[0][y].height + _Map[0][y] < zmin + waves)
-			_CurMap[0][y].height += waves;
-		if (_CurMap[0][y].height + _Map[0][y] > 1)
-			_CurMap[0][y].height = 1 - _Map[0][y];
-		_CurMap[_sizeX-1][y].dir = 7 * PI;
-//		_CurMap[0][y].speed = 0.5;
-	}
-	//		Est wave
-	for (unsigned int y = 0; y < _sizeY && e; y++)
-	{
-		if (_CurMap[_sizeX-1][y].height + _Map[_sizeX-1][y] < zmin + waves)
-			_CurMap[_sizeX-1][y].height += waves;
-		if (_CurMap[_sizeX-1][y].height + _Map[_sizeX-1][y] > 1)
-			_CurMap[_sizeX-1][y].height = 1 - _Map[_sizeX-1][y];
-		_CurMap[0][y].dir = 3 * PI;
-//		_CurMap[_sizeX-1][y].speed = 0.5;
-	}
-}
-
 void Water::Flood(void)
 {
 	double	PI = std::atan(1.0)*8;
@@ -509,47 +406,6 @@ float Water::Transfert(unsigned int x1, unsigned int y1,
 
 	_CurMap[x1][y1].speed *= slow;
 	return (_CurMap[x1][y1].height + _CurMap[x1][y1].speed + _Map[x1][y1]);
-}
-
-//	Wave functions
-float Water::WavesMin(bool n, bool s, bool e, bool w)
-{
-	float	zmin = 1.0;
-
-	//	Check lowest point of the edge
-	if (n)
-	{
-		for (unsigned int x = 0; x < _sizeX; x++)
-		{
-			if (_CurMap[x][0].height + _Map[x][0] < zmin)
-				zmin = _CurMap[x][0].height + _Map[x][0];
-		}
-	}
-	if (s)
-	{
-		for (unsigned int x = 0; x < _sizeX; x++)
-		{
-			if (_CurMap[x][_sizeY - 1].height + _Map[x][_sizeY - 1] < zmin)
-				zmin = _CurMap[x][_sizeY - 1].height + _Map[x][_sizeY - 1];
-		}
-	}
-	if (w)
-	{
-		for (unsigned int y = 0; y < _sizeY; y++)
-		{
-			if (_CurMap[0][y].height + _Map[0][y] < zmin)
-				zmin = _CurMap[0][y].height + _Map[0][y];
-		}
-	}
-	if (e)
-	{
-		for (unsigned int y = 0; y < _sizeY; y++)
-		{
-			if (_CurMap[_sizeX - 1][y].height + _Map[_sizeX - 1][y] < zmin)
-				zmin = _CurMap[_sizeX - 1][y].height + _Map[_sizeX - 1][y];
-		}
-	}
-	return zmin;
 }
 
 void Water::NewDir(unsigned int x, unsigned int y, float dir, float speed)
