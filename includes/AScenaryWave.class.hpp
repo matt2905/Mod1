@@ -6,7 +6,7 @@
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/26 13:05:53 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/05/07 12:48:01 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class	AScenaryWave: virtual AScenary
 	private:
 		//Function
 		//	Constrcutor
-		AScenaryWaves(void);
+		AScenaryWave(void);
 
 		//	Copy
 		AScenaryWave(const AScenaryWave &);
