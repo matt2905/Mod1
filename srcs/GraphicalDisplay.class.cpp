@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/23 20:36:00 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/05/07 13:48:25 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 {
 	XSetWindowAttributes	attributes;
+	XSizeHints				hints;
 	Visual					*visual;
 	int						screen;
 	int						depth;
@@ -40,6 +41,17 @@ GraphicalDisplay::GraphicalDisplay(unsigned int width, unsigned int height)
 	attributes.background_pixel = XBlackPixel(_dis, screen);
 
 	_win = XCreateWindow(_dis, XRootWindow(_dis, screen), 0, 0, 1500, 900, 1, depth, InputOutput, visual, CWBackPixel, &attributes);
+
+	XGetWMNormalHints(_dis, _win, &hints, NULL);
+	hints.width = _width;
+	hints.height = _height;
+	hints.min_width = _width;
+	hints.min_height = _height;
+	hints.max_width = _width;
+	hints.max_height = _height;
+	hints.flags = PPosition | PSize | PMinSize | PMaxSize;
+	XSetWMNormalHints(_dis, _win, &hints);
+
 	XMapWindow(_dis, _win);
 	XSelectInput(_dis, _win, ExposureMask | KeyPressMask | ButtonPressMask);
 	_gc = XCreateGC(_dis, _win, 0, 0);
@@ -242,7 +254,7 @@ void		GraphicalDisplay::drawWater(float **tab)
 		tmp_x += 0.5f;
 		tmp_y += 0.25f;
 	}
-	XPutImage(_dis, _win, _gc, _imageWater, 0, 0, 200, 200, _width, _height);
+	XPutImage(_dis, _win, _gc, _imageWater, 0, 0, 0, 200, _width, _height);
 }
 
 
@@ -274,7 +286,7 @@ void		GraphicalDisplay::setBackground(void)
 */
 void		GraphicalDisplay::expose(void)
 {
-	XPutImage(_dis, _win, _gc, _imageWater, 0, 0, 200, 200, _width, _height);
+	XPutImage(_dis, _win, _gc, _imageWater, 0, 0, 0, 200, _width, _height);
 	XPutImage(_dis, _win, _gc, (rise ? _whiteBG : _greyBG), 0, 0, 0, 0, 200, 25);
 	XDrawString(_dis, _win, _gc, 50, 15, "Rise water", 10);
 	XPutImage(_dis, _win, _gc, (rain ? _whiteBG : _greyBG), 0, 0, 200, 0, 200, 25);
