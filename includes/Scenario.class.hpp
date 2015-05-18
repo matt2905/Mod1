@@ -1,42 +1,53 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Water.class.hpp                                    :+:      :+:    :+:   */
+/*   Scenario.class.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbalea <tbalea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/02/13 11:17:55 by tbalea            #+#    #+#             */
-/*   Updated: 2015/03/20 13:50:32 by tbalea           ###   ########.fr       */
+/*   Created: 2015/05/17 18:50:42 by tbalea            #+#    #+#             */
+/*   Updated: 2015/05/17 18:50:44 by tbalea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WATER_CLASS_HPP
-# define WATER_CLASS_HPP
+#ifndef SCENARIO_CLASS_HPP
+# define SCENARIO_CLASS_HPP
 
-# include "Scenario.class.hpp"
+# include "Liquid.class.hpp"
 
-class Water: public Scenario {
+class Scenario: public Liquid {
 	public:
 		//Function
 		//	Constructor
-		Water(float ** Map, unsigned int sizeX, unsigned int sizeY);
+		Scenario(float ** Map, unsigned int sizeX, unsigned int sizeY, int type);
 
 		//	Destructor
-		~Water(void);
+		~Scenario(void);
 
 		//	Setter
 		//		No setter
 
 		//	Getter
 		//		No getter
-	private:
+
+		//	Scenario
+		void Rainy(void);
+		void Waves(bool n, bool s, bool e, bool w);
+		void Flood(void);
+		void Evapor(void);
+		void DiscWorld(bool n, bool s, bool e, bool w);
+
+	protected:
 		//Function
 		//	Constructor
-		Water(void);
+		Scenario(void);
 
 		//	Copy
-		Water(const Water & water);
-		Water & operator=(const Water & water);
+		Scenario(const Scenario & scenario);
+		Scenario & operator=(const Scenario & scenario);
+
+		//	Wave functions
+		float WavesMin(bool n, bool s, bool e, bool w);
 };
 
 #endif

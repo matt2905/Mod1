@@ -6,14 +6,15 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/28 13:45:14 by mmartin           #+#    #+#             */
-/*   Updated: 2015/05/07 13:49:32 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/05/18 17:26:58 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <cstring>
-#include <cstdlib>
+#include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <fstream>
+#include "mod1.h"
 #include "Map.class.hpp"
 #include "GraphicalDisplay.class.hpp"
 
@@ -82,10 +83,17 @@ void	ft_run(std::list<t_map> &mapHill)
 int		main(int argc, char **argv)
 {
 	std::list<t_map>	mapHill;
+	char				*ext;
 
 	if (argc != 2)
 	{
-		std::cout << "Usage: " << argv[0] << " file" << std::endl;
+		std::cout << "Usage: " << argv[0] << " file.mod1" << std::endl;
+		return (1);
+	}
+	ext = strrchr(argv[1], '.');
+	if (!ext || strcmp(ext, ".mod1"))
+	{
+		std::cout << "Usage: " << argv[0] << " file.mod1" << std::endl;
 		return (1);
 	}
 	ft_parse(argv[1], &mapHill);
@@ -94,7 +102,6 @@ int		main(int argc, char **argv)
 		std::cout << "Empty file or open failed" << std::endl;
 		return (1);
 	}
-	std::srand(std::time(NULL));
 	ft_run(mapHill);
 	return (0);
 }

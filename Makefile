@@ -6,7 +6,7 @@
 #    By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/02/03 13:39:05 by mmartin           #+#    #+#              #
-#    Updated: 2015/03/26 12:36:49 by mmartin          ###   ########.fr        #
+#    Updated: 2015/05/18 17:07:48 by mmartin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,12 +23,8 @@ NAME		=	mod1
 LIB			=	-L /usr/X11/lib -lX11
 
 SRC			=	srcs/main.cpp					\
-				srcs/AScenary.class.cpp			\
-				srcs/AScenaryRain.class.cpp		\
-				srcs/AScenaryWave.class.cpp		\
-				srcs/AScenaryFlood.class.cpp	\
-				srcs/AScenaryEvap.class.cpp		\
-				srcs/AScenaryDisc.class.cpp		\
+				srcs/Liquid.class.cpp			\
+				srcs/Scenario.class.cpp			\
 				srcs/GraphicalDisplay.class.cpp	\
 				srcs/Map.class.cpp				\
 				srcs/Water.class.cpp			\

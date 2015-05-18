@@ -6,17 +6,13 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/31 19:36:40 by mmartin           #+#    #+#             */
-/*   Updated: 2015/05/07 13:56:19 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/05/18 17:26:18 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <X11/keysym.h>
-#include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/select.h>
 #include "GraphicalDisplay.class.hpp"
+#include "mod1.h"
 
 /*
 **	Constructor / destructor
@@ -218,7 +214,7 @@ void		GraphicalDisplay::drawWater(float **tab)
 	int			r;
 	int			g;
 	int			b;
-	t_water		**map;
+	t_liquid	**map;
 	float		proj_x;
 	float		proj_y;
 	float		tmp_x = 500;
@@ -396,7 +392,7 @@ bool		GraphicalDisplay::run(void)
 					this->expose();
 				break;
 			case KeyPress:
-				if (XLookupKeysym(&_report.xkey, 0) == XK_q)
+				if (XLookupKeysym(&_report.xkey, 0) == XK_q || XLookupKeysym(&_report.xkey, 0) == XK_Escape)
 					return (false);
 				break;
 			case ButtonPress:

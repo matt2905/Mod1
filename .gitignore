@@ -30,3 +30,6 @@
 *.out
 *.app
 mod1
+
+# Misc
+.DS_STORE

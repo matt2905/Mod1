@@ -6,7 +6,7 @@
 /*   By: mmartin <mmartin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/03/26 13:01:37 by mmartin           #+#    #+#             */
-/*   Updated: 2015/03/26 14:02:18 by mmartin          ###   ########.fr       */
+/*   Updated: 2015/05/18 17:05:25 by mmartin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,13 @@ typedef struct		s_map
 	unsigned int	z;
 }					t_map;
 
-typedef struct		s_water
+typedef struct		s_liquid
 {
 	float			height;
 	float			speed;
 	float			dir;
-}					t_water;
+	int				type;
+}					t_liquid;
 
 typedef struct		s_color
 {
@@ -40,7 +41,7 @@ typedef struct		s_data
 {
 	char			*data;
 	float			**earth;
-	t_water			**water;
+	t_liquid		**water;
 	size_t			x;
 	size_t			y;
 	size_t			xmax;
